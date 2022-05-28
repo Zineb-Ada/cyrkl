@@ -1,0 +1,28 @@
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: ./docker/go/Dockerfile
+    ports:
+      - 3000:3000
+    links:
+      - database
+    tty:
+      true
+    volumes:
+      - ./src/app:/go/src/app
+
+  database:
+    restart: always
+    image: mysql:5.7
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql-datavolume:/var/lib/mysql
+    env_file:
+      - docker/docker.mysql.env
+
+volumes:
+  mysql-datavolume:
+    driver: local
