@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Zineb-ada/cyrkl/tree/social-framework/back/go-back-cyrkl/user"
+	"github.com/Zineb-Ada/cyrkl/tree/main/back/go-back-cyrkl/user"
 	"github.com/gin-gonic/gin"
 )
 
