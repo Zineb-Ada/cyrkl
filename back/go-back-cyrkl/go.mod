@@ -1,4 +1,4 @@
-module github.com/lsgser/go-social
+module github.com/zineb-Ada/cyrkl/back/go-back-cyrkl
 
 go 1.18
 

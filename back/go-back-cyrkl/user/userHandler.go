@@ -3,9 +3,9 @@ package user
 import (
 	"strings"
 
-	"github.com/Zineb-ada/cyrkl/tree/social-framework/back/go-back-cyrkl/auth"
 	"github.com/badoux/checkmail"
 	"github.com/gin-gonic/gin"
+	"github.com/zineb-Ada/cyrkl/tree/main/back/go-back-cyrkl/auth"
 )
 
 /*

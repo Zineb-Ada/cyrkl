@@ -15,7 +15,7 @@ import (
 func GenerateJWT(username string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["user"] = username
-	claims["aud"] = "go-social.jwtgo.io"
+	claims["aud"] = "surfspots.jwtgo.io"
 	claims["iss"] = "jwtgo.io"
 	/*
 	   The token will expire after 24 hours / 1 day
@@ -42,7 +42,7 @@ func CheckJWT(token string) error {
 	} else if !t.Valid {
 		err = errors.New("Invalid token")
 		return err
-	} else if t.Claims.(jwt.MapClaims)["aud"] != "go-social.jwtgo.io" {
+	} else if t.Claims.(jwt.MapClaims)["aud"] != "surfspots.jwtgo.io" {
 		err = errors.New("Invalid aud")
 		return err
 	} else if t.Claims.(jwt.MapClaims)["iss"] != "jwtgo.io" {

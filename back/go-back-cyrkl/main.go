@@ -1,8 +1,8 @@
 package main
 
 import (
-	S "github.com/Zineb-ada/cyrkl/tree/social-framework/back/go-back-cyrkl/server"
 	"github.com/joho/godotenv"
+	S "github.com/zineb-Ada/cyrkl/back/go-back-cyrkl/server"
 )
 
 func init() {

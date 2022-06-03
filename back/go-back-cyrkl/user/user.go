@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	CO "github.com/lsgser/go-social/config"
+	CO "github.com/zineb-Ada/cyrkl/tree/main/back/go-back-cyrkl/config"
 )
 
 type User struct {
