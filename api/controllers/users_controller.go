@@ -9,10 +9,10 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/Zineb-Ada/cyrkl/api/auth"
-	"github.com/Zineb-Ada/cyrkl/api/models"
-	"github.com/Zineb-Ada/cyrkl/api/responses"
-	"github.com/Zineb-Ada/cyrkl/api/utils/formaterror"
+	"github.com/zineb-ada/cyrkl/api/auth"
+	"github.com/zineb-ada/cyrkl/api/models"
+	"github.com/zineb-ada/cyrkl/api/responses"
+	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
 )
 
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -144,5 +144,5 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
-	responses.JSON(w, http.StatusNoContent, "")
+	responses.JSON(w, http.StatusNoContent, fmt.Sprintf("Successfully deleted : %d", uid))
 }

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Zineb-Ada/cyrkl/api/auth"
-	"github.com/Zineb-Ada/cyrkl/api/responses"
+	"github.com/zineb-ada/cyrkl/api/auth"
+	"github.com/zineb-ada/cyrkl/api/responses"
 )
 
 func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {

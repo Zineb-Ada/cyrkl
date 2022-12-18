@@ -13,16 +13,16 @@ import (
 )
 
 type User struct {
-	ID              uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	Name            string    `gorm:"size:255;not null" json:"name"`
-	Lastname        string    `gorm:"size:255;not null" json:"lastname"`
-	Email           string    `gorm:"size:100;not null;unique" json:"email"`
-	Urlphoto        string    `gorm:"size:255;default null" json:"photo"`
-	Telephone       string    `gorm:"size:20;default null;unique" json:"tel"`
-	Password        string    `gorm:"size:100;not null;" json:"password"`
-	EmailVerifiedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"email_verified_at,omitempty"`
-	CreatedAt       time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt       time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID        uint32 `gorm:"primary_key;auto_increment" json:"id"`
+	Name      string `gorm:"size:255;not null" json:"name"`
+	Lastname  string `gorm:"size:255;not null" json:"lastname"`
+	Email     string `gorm:"size:100;not null;unique" json:"email"`
+	Urlphoto  string `gorm:"size:255" json:urlphoto"`
+	Telephone string `gorm:"size:20;unique" json:"telephone"`
+	Password  string `gorm:"size:100;not null;" json:"password"`
+	// EmailVerifiedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"email_verified_at,omitempty"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 
 	// type User struct {
 	// 	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
@@ -59,7 +59,7 @@ func (u *User) Prepare() {
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.Urlphoto = html.EscapeString(strings.TrimSpace(u.Urlphoto))
 	u.Telephone = html.EscapeString(strings.TrimSpace(u.Telephone))
-	u.EmailVerifiedAt = time.Now()
+	// u.EmailVerifiedAt = time.Now()
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
 }
@@ -186,14 +186,13 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			// ID Name Lastname Email Urlphoto Telephone Password EmailVerifiedAt CreatedAt UpdatedAt
 			"name":      u.Name,
 			"lastname":  u.Lastname,
 			"email":     u.Email,
-			"photo":     u.Urlphoto,
+			"urlphoto":  u.Urlphoto,
 			"telephone": u.Telephone,
 			"password":  u.Password,
-			"update_at": time.Now(),
+			"updated_at": time.Now(),
 		},
 	)
 	if db.Error != nil {

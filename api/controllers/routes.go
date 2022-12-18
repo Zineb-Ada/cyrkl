@@ -1,6 +1,6 @@
 package controllers
 
-import "github.com/Zineb-Ada/cyrkl/api/middlewares"
+import "github.com/zineb-ada/cyrkl/api/middlewares"
 
 func (s *Server) initializeRoutes() {
 

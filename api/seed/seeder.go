@@ -3,8 +3,8 @@ package seed
 import (
 	"log"
 
-	"github.com/Zineb-Ada/cyrkl/api/models"
 	"github.com/jinzhu/gorm"
+	"github.com/zineb-ada/cyrkl/api/models"
 )
 
 // ID Name Lastname Email Urlphoto Telephone Password EmailVerifiedAt CreatedAt UpdatedAt
@@ -23,21 +23,21 @@ var users = []models.User{
 		Lastname:  "rag",
 		Email:     "nono-rag@gmail.com",
 		Urlphoto:  "thisisanurl",
-		Telephone: "0876756788",
+		Telephone: "0875436788",
 		Password:  "password",
 	},
 }
 
-var posts = []models.Post{
-	models.Post{
-		Title:   "Title 1",
-		Content: "Hello world 1",
-	},
-	models.Post{
-		Title:   "Title 2",
-		Content: "Hello world 2",
-	},
-}
+// var posts = []models.Post{
+// 	models.Post{
+// 		Title:   "Title 1",
+// 		Content: "Hello world 1",
+// 	},
+// 	models.Post{
+// 		Title:   "Title 2",
+// 		Content: "Hello world 2",
+// 	},
+// }
 
 func Load(db *gorm.DB) {
 

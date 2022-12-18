@@ -5,10 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/Zineb-Ada/cyrkl/api/auth"
-	"github.com/Zineb-Ada/cyrkl/api/models"
-	"github.com/Zineb-Ada/cyrkl/api/responses"
-	"github.com/Zineb-Ada/cyrkl/api/utils/formaterror"
+	"github.com/zineb-ada/cyrkl/api/auth"
+	"github.com/zineb-ada/cyrkl/api/models"
+	"github.com/zineb-ada/cyrkl/api/responses"
+	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
 

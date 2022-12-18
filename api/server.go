@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/Zineb-Ada/cyrkl/api/controllers"
-	"github.com/Zineb-Ada/cyrkl/api/seed"
+	"github.com/zineb-ada/cyrkl/api/controllers"
+	"github.com/zineb-ada/cyrkl/api/seed"
 )
 
 var server = controllers.Server{}
