@@ -1,0 +1,66 @@
+version: '3'
+services:
+  app:
+    container_name: cyrkl_app
+    build: .
+    ports: 
+      - 8080:8080 
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - cyrkl-postgres          
+    networks:
+      - cyrkl
+
+
+  cyrkl-postgres:
+    image: postgres:latest
+    container_name: cyrkl_db_postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST} 
+    ports:
+      - '5432:5432'
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - cyrkl
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - cyrkl-postgres
+    ports:
+      - "5050:80"
+    networks:
+      - cyrkl
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer-data:/data
+    ports: 
+      - 9000:9000
+
+volumes:
+  api:
+  database_postgres:                  
+
+# Networks to be created to facilitate communication between containers
+networks:
+  cyrkl:
+    driver: bridge
