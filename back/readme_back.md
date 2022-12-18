@@ -1,4 +1,0 @@
-instal : 
-- Tableplus
-- Postman
-- docker
