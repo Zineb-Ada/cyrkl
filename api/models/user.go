@@ -9,30 +9,28 @@ import (
 
 	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID        uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	Name      string `gorm:"size:255;not null" json:"name"`
-	Lastname  string `gorm:"size:255;not null" json:"lastname"`
-	Email     string `gorm:"size:100;not null;unique" json:"email"`
-	Urlphoto  string `gorm:"size:255" json:urlphoto"`
-	Telephone string `gorm:"size:20;unique" json:"telephone"`
-	Password  string `gorm:"size:100;not null;" json:"password"`
-	// EmailVerifiedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"email_verified_at,omitempty"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-
-	// type User struct {
-	// 	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	// 	Nickname  string    `gorm:"size:255;not null;unique" json:"nickname"`
-	// 	Email     string    `gorm:"size:100;not null;unique" json:"email"`
-	// 	Password  string    `gorm:"size:100;not null;" json:"password"`
-	// 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	// 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID              uint32         `gorm:"primary_key;auto_increment" json:"id"`
+	Name            string         `gorm:"size:255;not null" json:"name"`
+	Lastname        string         `gorm:"size:255;not null" json:"lastname"`
+	Email           string         `gorm:"size:100;not null;unique" json:"email"`
+	Urlphoto        string         `gorm:"size:255;null" json:"urlphoto"`
+	Telephone       string         `gorm:"size:20;unique;null" json:"telephone"`
+	Password        string         `gorm:"size:100;notnull;" json:"password"`
+	Position        string         `gorm:"size:255;null" json:"position"`
+	Positionsought  pq.StringArray `gorm:"type:varchar(255)[]; null" json:"positionsought"`
+	Industry        string         `gorm:"size:255;null" json:"industry"`
+	Industrysought  pq.StringArray `gorm:"type:varchar(255)[];null" json:"industrysought"`
+	EmailVerifiedAt time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"email_verified_at"`
+	CreatedAt       time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt       time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
+// add email verified
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
@@ -50,8 +48,6 @@ func (u *User) BeforeSave() error {
 	return nil
 }
 
-// ID Name Lastname Email Urlphoto Telephone Password EmailVerifiedAt CreatedAt UpdatedAt
-
 func (u *User) Prepare() {
 	u.ID = 0
 	u.Name = html.EscapeString(strings.TrimSpace(u.Name))
@@ -59,7 +55,14 @@ func (u *User) Prepare() {
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.Urlphoto = html.EscapeString(strings.TrimSpace(u.Urlphoto))
 	u.Telephone = html.EscapeString(strings.TrimSpace(u.Telephone))
-	// u.EmailVerifiedAt = time.Now()
+	u.Position = html.EscapeString(strings.TrimSpace(u.Position))
+	for i := 0; i < len(u.Positionsought); i++ {
+		u.Industrysought[i] = html.EscapeString(strings.TrimSpace(u.Industrysought[i]))
+	}
+	u.Industry = html.EscapeString(strings.TrimSpace(u.Industry))
+	for i := 0; i < len(u.Industrysought); i++ {
+		u.Industrysought[i] = html.EscapeString(strings.TrimSpace(u.Industrysought[i]))
+	}
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
 }
@@ -80,16 +83,28 @@ func (u *User) Validate(action string) error {
 			return errors.New("Required Email")
 		}
 		if u.Telephone == "" {
-			return errors.New("Required Telphone")
+			return errors.New("Required Telephone")
 		}
 		if u.Urlphoto == "" {
 			return errors.New("Required Urlphoto")
 		}
+		if u.Position == "" {
+			return errors.New("Required Work Position")
+		}
+		if u.Positionsought == nil {
+			return errors.New("Required Work Position Sought")
+		}
+		if u.Industry == "" {
+			return errors.New("Required Work Industry")
+		}
+		if u.Industrysought == nil {
+			return errors.New("Required Work Industry Sought")
+		}
 		if err := checkmail.ValidateFormat(u.Email); err != nil {
 			return errors.New("Invalid Email")
 		}
-
 		return nil
+
 	case "login":
 		if u.Password == "" {
 			return errors.New("Required Password")
@@ -138,6 +153,18 @@ func (u *User) Validate(action string) error {
 		if u.Urlphoto == "" {
 			return errors.New("Required Urlphoto")
 		}
+		if u.Position == "" {
+			return errors.New("Required Work Position")
+		}
+		if u.Positionsought == nil {
+			return errors.New("Required Work Position Sought")
+		}
+		if u.Industry == "" {
+			return errors.New("Required Work Industry")
+		}
+		if u.Industrysought == nil {
+			return errors.New("Required Work Industry Sought")
+		}
 		if err := checkmail.ValidateFormat(u.Email); err != nil {
 			return errors.New("Invalid Email")
 		}
@@ -146,7 +173,6 @@ func (u *User) Validate(action string) error {
 }
 
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
-
 	var err error
 	err = db.Debug().Create(&u).Error
 	if err != nil {
@@ -178,7 +204,6 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 }
 
 func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
-
 	// To hash the password
 	err := u.BeforeSave()
 	if err != nil {
@@ -186,19 +211,23 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"name":      u.Name,
-			"lastname":  u.Lastname,
-			"email":     u.Email,
-			"urlphoto":  u.Urlphoto,
-			"telephone": u.Telephone,
-			"password":  u.Password,
-			"updated_at": time.Now(),
+			"name":           u.Name,
+			"lastname":       u.Lastname,
+			"email":          u.Email,
+			"urlphoto":       u.Urlphoto,
+			"telephone":      u.Telephone,
+			"password":       u.Password,
+			"position":       u.Position,
+			"positionsought": u.Positionsought,
+			"industry":       u.Industry,
+			"industrysought": u.Industrysought,
+			"updated_at":     time.Now(),
 		},
 	)
 	if db.Error != nil {
 		return &User{}, db.Error
 	}
-	// This is the display the updated user
+	// Display the updated user
 	err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err
@@ -207,9 +236,7 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 }
 
 func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
-
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
-
 	if db.Error != nil {
 		return 0, db.Error
 	}
