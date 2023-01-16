@@ -25,7 +25,7 @@ type User struct {
 	Positionsought  pq.StringArray `gorm:"type:varchar(255)[]; null" json:"positionsought"`
 	Industry        string         `gorm:"size:255;null" json:"industry"`
 	Industrysought  pq.StringArray `gorm:"type:varchar(255)[];null" json:"industrysought"`
-	EmailVerifiedAt time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"email_verified_at"`
+	// EmailVerifiedAt time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"email_verified_at"`
 	CreatedAt       time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt       time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
