@@ -14,23 +14,21 @@ import (
 )
 
 type User struct {
-	ID              uint32         `gorm:"primary_key;auto_increment" json:"id"`
-	Name            string         `gorm:"size:255;not null" json:"name"`
-	Lastname        string         `gorm:"size:255;not null" json:"lastname"`
-	Email           string         `gorm:"size:100;not null;unique" json:"email"`
-	Urlphoto        string         `gorm:"size:255;null" json:"urlphoto"`
-	Telephone       string         `gorm:"size:20;unique;null" json:"telephone"`
-	Password        string         `gorm:"size:100;notnull;" json:"password"`
-	Position        string         `gorm:"size:255;null" json:"position"`
-	Positionsought  pq.StringArray `gorm:"type:varchar(255)[]; null" json:"positionsought"`
-	Industry        string         `gorm:"size:255;null" json:"industry"`
-	Industrysought  pq.StringArray `gorm:"type:varchar(255)[];null" json:"industrysought"`
-	// EmailVerifiedAt time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"email_verified_at"`
-	CreatedAt       time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt       time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID        uint32 `gorm:"primary_key;auto_increment" json:"id"`
+	Name      string `gorm:"size:255" json:"name"`
+	Lastname  string `gorm:"size:255" json:"lastname"`
+	Email     string `gorm:"size:100;unique" json:"email"`
+	Urlphoto  string `gorm:"size:255" json:"urlphoto"`
+	Telephone string `gorm:"size:20;unique" json:"telephone"`
+	Password  string `gorm:"size:100;" json:"password"`
+	Position  string `gorm:"size:255" json:"position"`
+	Positionsought pq.StringArray `gorm:"type:varchar(255)[]" json:"positionsought"`
+	Industry       string          `gorm:"size:255" json:"industry"`
+	Industrysought pq.StringArray `gorm:"type:varchar(255)[]" json:"industrysought"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
-// add email verified
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
@@ -57,9 +55,10 @@ func (u *User) Prepare() {
 	u.Telephone = html.EscapeString(strings.TrimSpace(u.Telephone))
 	u.Position = html.EscapeString(strings.TrimSpace(u.Position))
 	for i := 0; i < len(u.Positionsought); i++ {
-		u.Industrysought[i] = html.EscapeString(strings.TrimSpace(u.Industrysought[i]))
+		u.Positionsought[i] = html.EscapeString(strings.TrimSpace(u.Positionsought[i]))
 	}
 	u.Industry = html.EscapeString(strings.TrimSpace(u.Industry))
+	// u.Industrysought = u.Industrysought
 	for i := 0; i < len(u.Industrysought); i++ {
 		u.Industrysought[i] = html.EscapeString(strings.TrimSpace(u.Industrysought[i]))
 	}
@@ -123,11 +122,14 @@ func (u *User) Validate(action string) error {
 		if u.Lastname == "" {
 			return errors.New("Required Lastname")
 		}
-		if u.Password == "" {
-			return errors.New("Required Password")
-		}
 		if u.Email == "" {
 			return errors.New("Required Email")
+		}
+		if u.Telephone == "" {
+			return errors.New("Required Telephone")
+		}
+		if u.Password == "" {
+			return errors.New("Required Password")
 		}
 		if err := checkmail.ValidateFormat(u.Email); err != nil {
 			return errors.New("Invalid Email")

@@ -8,6 +8,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+	"github.com/lib/pq"
 	"github.com/zineb-ada/cyrkl/api/controllers"
 	"github.com/zineb-ada/cyrkl/api/models"
 )
@@ -71,9 +72,9 @@ func seedOneUser() (models.User, error) {
 		Telephone:      "0876756788",
 		Password:       "password",
 		Position:       "directeur",
-		Positionsought: []string{"pos1", "pos2", "pos3", "pos4"},
+		Positionsought: pq.StringArray([]string{"pos1", "pos2", "pos3", "pos4"}),
 		Industry:       "finance",
-		Industrysought: []string{"ind1", "ind2", "ind3", "ind4"},
+		Industrysought: pq.StringArray([]string{"ind1", "ind2", "ind3", "ind4"}),
 	}
 
 	err = server.DB.Model(&models.User{}).Create(&user).Error
@@ -97,10 +98,11 @@ func seedUsers() ([]models.User, error) {
 			Urlphoto:       "thisisanurl",
 			Telephone:      "0798456678",
 			Password:       "password",
-			Position:       "directrice",
-			Positionsought: []string{"pos1", "pos2", "pos3", "pos4"},
-			Industry:       "marketing",
-			Industrysought: []string{"ind1", "ind2", "ind3", "ind4"},
+			Position:       "directeur",
+			Positionsought: pq.StringArray([]string{"pos1", "pos2", "pos3", "pos4"}),
+			// pq.StringArray{"pos1", "pos2", "pos3", "pos4"},
+			Industry:       "finance",
+			Industrysought: pq.StringArray([]string{"ind1", "ind2", "ind3", "ind4"}),
 		},
 		models.User{
 			Name:           "babou",
@@ -109,10 +111,10 @@ func seedUsers() ([]models.User, error) {
 			Urlphoto:       "thisisanurl",
 			Telephone:      "0876435212",
 			Password:       "password",
-			Position:       "sans",
-			Positionsought: []string{"pos1", "pos2", "pos3", "pos4"},
-			Industry:       "immobilier",
-			Industrysought: []string{"ind1", "ind2", "ind3", "ind4"},
+			Position:       "directeur",
+			Positionsought: pq.StringArray([]string{"pos1", "pos2", "pos3", "pos4"}),
+			Industry:       "finance",
+			Industrysought: pq.StringArray([]string{"ind1", "ind2", "ind3", "ind4"}),
 		},
 	}
 	for i, _ := range users {

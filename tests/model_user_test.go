@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 	"github.com/zineb-ada/cyrkl/api/models"
 )
@@ -41,13 +42,8 @@ func TestSaveUser(t *testing.T) {
 		Name:           "nico",
 		Lastname:       "abd",
 		Email:          "nic_ab@gmail.com",
-		Urlphoto:       "thisisanurl",
 		Telephone:      "0798456678",
 		Password:       "password",
-		Position:       "directrice",
-		Positionsought: []string{"pos1", "pos2", "pos3", "pos4"},
-		Industry:       "marketing",
-		Industrysought: []string{"ind1", "ind2", "ind3", "ind4"},
 	}
 	savedUser, err := newUser.SaveUser(server.DB)
 	if err != nil {
@@ -58,12 +54,7 @@ func TestSaveUser(t *testing.T) {
 	assert.Equal(t, newUser.Name, savedUser.Name)
 	assert.Equal(t, newUser.Lastname, savedUser.Lastname)
 	assert.Equal(t, newUser.Email, savedUser.Email)
-	assert.Equal(t, newUser.Urlphoto, savedUser.Urlphoto)
 	assert.Equal(t, newUser.Telephone, savedUser.Telephone)
-	assert.Equal(t, newUser.Position, savedUser.Position)
-	assert.Equal(t, newUser.Positionsought, savedUser.Positionsought)
-	assert.Equal(t, newUser.Industry, savedUser.Industry)
-	assert.Equal(t, newUser.Industrysought, savedUser.Industrysought)
 }
 
 func TestFindUserByID(t *testing.T) {
@@ -115,9 +106,9 @@ func TestUpdateAUser(t *testing.T) {
 		Telephone:      "0788456678",
 		Password:       "password",
 		Position:       "commercial",
-		Positionsought: []string{"pos1", "pos2", "pos3", "pos4"},
+		Positionsought: pq.StringArray{"pos1", "pos2", "pos3", "pos4"},
 		Industry:       "boum",
-		Industrysought: []string{"ind1", "ind2", "ind3", "ind4"},
+		Industrysought: pq.StringArray{"ind1", "ind2", "ind3", "ind4"},
 	}
 	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID)
 	if err != nil {

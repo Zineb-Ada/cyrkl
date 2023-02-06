@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./Dockerfile.test
     volumes:
-      - api_test:/app/src/app/
+      - ./api_test:/app/src/app/
     depends_on:
       - postgres_test
     networks:
@@ -24,13 +24,9 @@ services:
     ports:
       - '5555:5432'
     volumes:
-      - database_postgres_test:/var/lib/postgresql/data
+      - ./database_postgres_test:/var/lib/postgresql/data
     networks:
       - cyrkl_test
-  
-volumes:
-  api_test:
-  database_postgres_test:
 
 networks:
   cyrkl_test:

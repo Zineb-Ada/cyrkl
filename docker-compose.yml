@@ -7,7 +7,7 @@ services:
       - 8080:8080 
     restart: on-failure
     volumes:
-      - api:/usr/src/app/
+      - ./api:/usr/src/app/
     depends_on:
       - cyrkl-postgres          
     networks:
@@ -22,9 +22,9 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - DATABASE_HOST=${DB_HOST} 
     ports:
-      - '5433:5433'
+      - '5432:5432'
     volumes:
-      - database_postgres:/var/lib/postgresql/data
+      - ./database_postgres:/var/lib/postgresql/data
     networks:
       - cyrkl
     
@@ -52,12 +52,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./portainer-data:/data
-    ports: 
-      - 9000:9000
-
-volumes:
-  api:
-  database_postgres:                  
+    ports:
+      - 9000:9000   
 
 # Networks to be created to facilitate communication between containers
 networks:

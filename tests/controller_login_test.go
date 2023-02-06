@@ -73,12 +73,13 @@ func TestLogin(t *testing.T) {
 		errorMessage string
 	}{
 		{
-			inputJSON:    `{"email": "pet@gmail.com", "password": "password"}`,
+			inputJSON:    `{"email": "toto_titi@gmail.com", "password": "password"}`,
 			statusCode:   200,
 			errorMessage: "",
 		},
+// Investigation : pq ici il veut Incorrect Details au lieu de incorrecot Password????
 		{
-			inputJSON:    `{"email": "pet@gmail.com", "password": "wrong password"}`,
+			inputJSON:    `{"email": "toto_titi@gmail.com", "password": "wrong password"}`,
 			statusCode:   422,
 			errorMessage: "Incorrect Password",
 		},

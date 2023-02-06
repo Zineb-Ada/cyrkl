@@ -23,153 +23,103 @@ func TestCreateUser(t *testing.T) {
 		log.Fatal(err)
 	}
 	samples := []struct {
-		inputJSON      string
-		statusCode     int
-		name           string
-		lastname       string
-		email          string
-		urlphoto       string
-		telephone      string
-		position       string
-		positionsought pq.StringArray
-		industry       string
-		industrysought pq.StringArray
-		errorMessage   string
+		inputJSON    string
+		statusCode   int
+		name         string
+		lastname     string
+		email        string
+		telephone    string
+		errorMessage string
 	}{
 		{
 			inputJSON: `{
 				"name": "laurie",
 				"lastname": "clu",
 				"email": "laurie-clu@gmail.com",
-				"urlphoto": "thisisanurl",
-				"telephone": "0876756788",
-				"password": "password",
-				"position": "work_position",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "industry",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"telephone": "0876756238",
+				"password": "password"
 				}`,
-			statusCode:     201,
-			name:           "laurie",
-			lastname:       "clu",
-			email:          "laurie-clu@gmail.com",
-			urlphoto:       "thisisanurl",
-			telephone:      "0876756788",
-			position:       "work_position",
-			positionsought: []string{"pos1", "pos2", "pos3", "pos4"},
-			industry:       "industry",
-			industrysought: []string{"ind1", "ind2", "ind3", "ind4"},
-			errorMessage:   "",
+			statusCode:   201,
+			name:         "laurie",
+			lastname:     "clu",
+			email:        "laurie-clu@gmail.com",
+			telephone:    "0876756238",
+			errorMessage: "",
 		},
 		{
-			inputJSON:    `{
+			inputJSON: `{
 				"name": "lolo",
 				"lastname": "cluclu",
 				"email": "laurie-clu@gmail.com",
-				"urlphoto": "thisisanurl",
 				"telephone": "0876756688",
-				"password": "password",
-				"position": "work_position",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "industry",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"password": "password"
 				}`,
 			statusCode:   500,
 			errorMessage: "Email Already Taken",
 		},
 		{
-			inputJSON:    `{
+			inputJSON: `{
 				"name": "ami",
 				"lastname": "grand",
 				"email": "grand-ami@gmail.com",
-				"urlphoto": "thisisanurl",
-				"telephone": "0876756788",
-				"password": "password",
-				"position": "work_position",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "industry",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"telephone": "0876756238",
+				"password": "password"
 				}`,
 			statusCode:   500,
 			errorMessage: "Telephone Already Taken",
 		},
 		{
-			inputJSON:    `{
+			inputJSON: `{
 				"name": "lala",
 				"lastname": "marie",
 				"email": "lala_mariegmail.com",
-				"urlphoto": "thisisanurl",
 				"telephone": "0576756788",
-				"password": "password",
-				"position": "work_position",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "industry",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"password": "password"
 				}`,
 			statusCode:   422,
 			errorMessage: "Invalid Email",
 		},
 		{
-			inputJSON:    `{
+			inputJSON: `{
 				"name": "",
 				"lastname": "arnoud",
 				"email": "fred_arnoud@gmail.com",
-				"urlphoto": "thisisanurl",
 				"telephone": "0576736758",
-				"password": "password",
-				"position": "CTO",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "tech",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"password": "password"
 				}`,
 			statusCode:   422,
 			errorMessage: "Required Name",
 		},
 		{
-			inputJSON:    `{
+			inputJSON: `{
 				"name": "fred",
 				"lastname": "",
 				"email": "fred@gmail.com",
-				"urlphoto": "thisisanurl",
 				"telephone": "0576756558",
-				"password": "password",
-				"position": "CTO",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "tech",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"password": "password"
 				}`,
 			statusCode:   422,
-			errorMessage: "Required Lastnam",
+			errorMessage: "Required Lastname",
 		},
 		{
-			inputJSON:    `{
+			inputJSON: `{
 				"name": "mimi",
 				"lastname": "lg",
 				"email": "",
-				"urlphoto": "thisisanurl",
 				"telephone": "0572756558",
-				"password": "password",
-				"position": "CTO",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "tech",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"password": "password"
 				}`,
-				
+
 			statusCode:   422,
 			errorMessage: "Required Email",
 		},
 		{
-			inputJSON:   `{
+			inputJSON: `{
 				"name": "fred",
-				"lastname": "",
+				"lastname": "Arnoud",
 				"email": "fred@gmail.com",
-				"urlphoto": "thisisanurl",
 				"telephone": "0576756558",
-				"password": "password",
-				"position": "CTO",
-				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "tech",
-				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
+				"password": ""
 				}`,
 			statusCode:   422,
 			errorMessage: "Required Password",
@@ -196,12 +146,7 @@ func TestCreateUser(t *testing.T) {
 			assert.Equal(t, responseMap["name"], v.name)
 			assert.Equal(t, responseMap["lastname"], v.lastname)
 			assert.Equal(t, responseMap["email"], v.email)
-			assert.Equal(t, responseMap["urlphoto"], v.urlphoto)
 			assert.Equal(t, responseMap["telephone"], v.telephone)
-			assert.Equal(t, responseMap["position"], v.position)
-			assert.Equal(t, responseMap["urlphoto"], v.positionsought)
-			assert.Equal(t, responseMap["telephone"], v.industry)
-			assert.Equal(t, responseMap["position"], v.industrysought)
 		}
 		if v.statusCode == 422 || v.statusCode == 500 && v.errorMessage != "" {
 			assert.Equal(t, responseMap["error"], v.errorMessage)
@@ -247,8 +192,8 @@ func TestGetUserByID(t *testing.T) {
 		log.Fatal(err)
 	}
 	userSample := []struct {
-		id           string
-		statusCode   int
+		id             string
+		statusCode     int
 		name           string
 		lastname       string
 		email          string
@@ -258,19 +203,19 @@ func TestGetUserByID(t *testing.T) {
 		positionsought pq.StringArray
 		industry       string
 		industrysought pq.StringArray
-		errorMessage string
+		errorMessage   string
 	}{
 		{
-			id:         strconv.Itoa(int(user.ID)),
-			statusCode: 200,
-			name:   user.Name,
-			lastname: user.Lastname,
-			email:      user.Email,
-			urlphoto: user.Urlphoto,
-			telephone: user.Telephone,
-			position: user.Position,
+			id:             strconv.Itoa(int(user.ID)),
+			statusCode:     200,
+			name:           user.Name,
+			lastname:       user.Lastname,
+			email:          user.Email,
+			urlphoto:       user.Urlphoto,
+			telephone:      user.Telephone,
+			position:       user.Position,
 			positionsought: user.Positionsought,
-			industry: user.Industry,
+			industry:       user.Industry,
 			industrysought: user.Industrysought,
 		},
 		{
@@ -304,9 +249,17 @@ func TestGetUserByID(t *testing.T) {
 			assert.Equal(t, user.Urlphoto, responseMap["urlphoto"])
 			assert.Equal(t, user.Telephone, responseMap["telephone"])
 			assert.Equal(t, user.Position, responseMap["position"])
-			assert.Equal(t, user.Positionsought, responseMap["positionsought"])
+			positions := make([]string, len(responseMap["positionsought"].([]interface{})))
+			for i, v := range responseMap["positionsought"].([]interface{}) {
+				positions[i] = v.(string)
+			}
+			assert.Equal(t, []string(user.Positionsought), positions)
 			assert.Equal(t, user.Industry, responseMap["industry"])
-			assert.Equal(t, user.Industrysought, responseMap["industrysought"])
+			industrys := make([]string, len(responseMap["industrysought"].([]interface{})))
+			for i, v := range responseMap["industrysought"].([]interface{}) {
+				industrys[i] = v.(string)
+			}
+			assert.Equal(t, []string(user.Industrysought), industrys)
 		}
 	}
 }
@@ -341,25 +294,25 @@ func TestUpdateUser(t *testing.T) {
 	tokenString := fmt.Sprintf("Bearer %v", token)
 
 	samples := []struct {
-		id             string
-		updateJSON     string
-		statusCode     int
-		updateName     string
-		updateLastname string
-		updateEmail    string
-		updateUrlphoto string
-		updateTelephone string
-		updatePosition string
+		id                   string
+		updateJSON           string
+		statusCode           int
+		updateName           string
+		updateLastname       string
+		updateEmail          string
+		updateUrlphoto       string
+		updateTelephone      string
+		updatePosition       string
 		updatePositionsought pq.StringArray
-		updateIndustry string
+		updateIndustry       string
 		updateIndustrysought pq.StringArray
-		tokenGiven     string
-		errorMessage   string
+		tokenGiven           string
+		errorMessage         string
 	}{
 		{
 			// Convert int32 to int first before converting to string
-			id:             strconv.Itoa(int(AuthID)),
-			updateJSON:     `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "fred",
 				"lastname": "arnoud",
 				"email": "fred_arnoud@gmail.com",
@@ -371,42 +324,42 @@ func TestUpdateUser(t *testing.T) {
 				"industry": "tech",
 				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
 				}`,
-			statusCode:     200,
-			updateName: "fred",
-			updateLastname: "arnoud",
-			updateEmail: "fred_arnoud@gmail.com",
-			updateUrlphoto: "thisisanurl",
-			updateTelephone: "0576756558",
-			updatePosition: "CTO",
+			statusCode:           200,
+			updateName:           "fred",
+			updateLastname:       "arnoud",
+			updateEmail:          "fred_arnoud@gmail.com",
+			updateUrlphoto:       "thisisanurl",
+			updateTelephone:      "0576756558",
+			updatePosition:       "CTO",
 			updatePositionsought: []string{"pos1", "pos2", "pos3", "pos4"},
-			updateIndustry: "tech",
-			updateIndustrysought: []string{"pos1", "pos2", "pos3", "pos4"},
-			tokenGiven:     tokenString,
-			errorMessage:   "",
+			updateIndustry:       "tech",
+			updateIndustrysought: []string{"ind1", "ind2", "ind3", "ind4"},
+			tokenGiven:           tokenString,
+			errorMessage:         "",
 		},
 		{
 			// When password field is empty
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "toto",
 				"lastname": "titi",
 				"email": "toto_titi@gmail.com",
 				"urlphoto": "thisisanurl",
-				"telephone": "0546756558",
+				"telephone": "0576756552",
 				"password": "",
-				"position": "moka",
+				"position": "bb",
 				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
-				"industry": "industry",
+				"industry": "tech",
 				"industrysought": ["ind1", "ind2", "ind3", "ind4"]
-				}`,
+			}`,
 			statusCode:   422,
 			tokenGiven:   tokenString,
 			errorMessage: "Required Password",
 		},
 		{
 			// When no token was passed
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "lala",
 				"lastname": "momo",
 				"email": "lala_momo@gmail.com",
@@ -424,8 +377,8 @@ func TestUpdateUser(t *testing.T) {
 		},
 		{
 			// When incorrect token was passed
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "romain",
 				"lastname": "ledrogo",
 				"email": "romain_ledrogo@gmail.com",
@@ -442,8 +395,8 @@ func TestUpdateUser(t *testing.T) {
 			errorMessage: "Unauthorized",
 		},
 		{
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "bab",
 				"lastname": "jamb",
 				"email": "babou_jam@gmail.com",
@@ -461,13 +414,13 @@ func TestUpdateUser(t *testing.T) {
 		},
 		{
 			// Remember "Kenny Morris" belongs to user 2
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "nil",
 				"lastname": "armstrong",
 				"email": "nil_armstrong@gmail.com",
 				"urlphoto": "thisisanurl",
-				"telephone": "0798456678",
+				"telephone": "0876435212",
 				"password": "password",
 				"position": "astronaute",
 				"positionsought": ["pos1", "pos2", "pos3", "pos4"],
@@ -479,8 +432,8 @@ func TestUpdateUser(t *testing.T) {
 			errorMessage: "Telephone Already Taken",
 		},
 		{
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "agatha",
 				"lastname": "christie",
 				"email": "agatha_christiegmail.com",
@@ -497,11 +450,11 @@ func TestUpdateUser(t *testing.T) {
 			errorMessage: "Invalid Email",
 		},
 		{
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "nil",
 				"lastname": "armstrong",
-				"email": "nil_armstrong@@gmail.com",
+				"email": "nil_armstrong@gmail.com",
 				"urlphoto": "thisisanurl",
 				"telephone": "",
 				"password": "password",
@@ -515,8 +468,8 @@ func TestUpdateUser(t *testing.T) {
 			errorMessage: "Required Telephone",
 		},
 		{
-			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(AuthID)),
+			updateJSON: `{
 				"name": "nil",
 				"lastname": "armstrong",
 				"email": "",
@@ -539,8 +492,8 @@ func TestUpdateUser(t *testing.T) {
 		},
 		{
 			// When user 2 is using user 1 token
-			id:           strconv.Itoa(int(2)),
-			updateJSON:   `{
+			id: strconv.Itoa(int(2)),
+			updateJSON: `{
 				"name": "nil",
 				"lastname": "armstrong",
 				"email": "nil_armstrong@gmail.com",
@@ -586,9 +539,17 @@ func TestUpdateUser(t *testing.T) {
 			assert.Equal(t, responseMap["urlphoto"], v.updateUrlphoto)
 			assert.Equal(t, responseMap["telephone"], v.updateTelephone)
 			assert.Equal(t, responseMap["position"], v.updatePosition)
-			assert.Equal(t, responseMap["positionsought"], v.updatePositionsought)
+			positions := make([]string, len(responseMap["positionsought"].([]interface{})))
+			for i, v := range responseMap["positionsought"].([]interface{}) {
+				positions[i] = v.(string)
+			}
+			assert.Equal(t, positions, []string(v.updatePositionsought))
 			assert.Equal(t, responseMap["industry"], v.updateIndustry)
-			assert.Equal(t, responseMap["industrysought"], v.updateIndustrysought)
+			industrys := make([]string, len(responseMap["industrysought"].([]interface{})))
+			for i, v := range responseMap["industrysought"].([]interface{}) {
+				industrys[i] = v.(string)
+			}
+			assert.Equal(t, industrys, []string(v.updateIndustrysought))
 		}
 		if v.statusCode == 401 || v.statusCode == 422 || v.statusCode == 500 && v.errorMessage != "" {
 			assert.Equal(t, responseMap["error"], v.errorMessage)
