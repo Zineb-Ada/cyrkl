@@ -58,7 +58,6 @@ func (u *User) Prepare() {
 		u.Positionsought[i] = html.EscapeString(strings.TrimSpace(u.Positionsought[i]))
 	}
 	u.Industry = html.EscapeString(strings.TrimSpace(u.Industry))
-	// u.Industrysought = u.Industrysought
 	for i := 0; i < len(u.Industrysought); i++ {
 		u.Industrysought[i] = html.EscapeString(strings.TrimSpace(u.Industrysought[i]))
 	}
