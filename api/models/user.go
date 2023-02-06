@@ -1,5 +1,6 @@
 package models
 
+// gérer les photos ??????????
 import (
 	"errors"
 	"html"
@@ -14,19 +15,19 @@ import (
 )
 
 type User struct {
-	ID        uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	Name      string `gorm:"size:255" json:"name"`
-	Lastname  string `gorm:"size:255" json:"lastname"`
-	Email     string `gorm:"size:100;unique" json:"email"`
-	Urlphoto  string `gorm:"size:255" json:"urlphoto"`
-	Telephone string `gorm:"size:20;unique" json:"telephone"`
-	Password  string `gorm:"size:100;" json:"password"`
-	Position  string `gorm:"size:255" json:"position"`
+	ID             uint32         `gorm:"primary_key;auto_increment" json:"id"`
+	Name           string         `gorm:"size:255" json:"name"`
+	Lastname       string         `gorm:"size:255" json:"lastname"`
+	Email          string         `gorm:"size:100;unique" json:"email"`
+	Urlphoto       string         `gorm:"size:255" json:"urlphoto"`
+	Telephone      string         `gorm:"size:20;unique" json:"telephone"`
+	Password       string         `gorm:"size:100;" json:"password"`
+	Position       string         `gorm:"size:255" json:"position"`
 	Positionsought pq.StringArray `gorm:"type:varchar(255)[]" json:"positionsought"`
-	Industry       string          `gorm:"size:255" json:"industry"`
+	Industry       string         `gorm:"size:255" json:"industry"`
 	Industrysought pq.StringArray `gorm:"type:varchar(255)[]" json:"industrysought"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt      time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt      time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 func Hash(password string) ([]byte, error) {
