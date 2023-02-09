@@ -21,6 +21,17 @@ env:
   PGADMIN_DEFAULT_EMAIL: live@admin.com
   PGADMIN_DEFAULT_PASSWORD: password
 
+env:
+      # Postgres Test
+        TEST_DB_HOST: postgres_test                      
+# TEST_DB_HOST=127.0.0.1                        # when running the app without docker 
+        TEST_DB_DRIVER: postgres
+        TEST_API_SECRET: 98hbun98h
+        TEST_DB_USER: root
+        TEST_DB_PASSWORD: apirestgo
+        TEST_DB_NAME: cyrkl_api_test
+        TEST_DB_PORT: 5432
+        
 jobs:
 
   build:
@@ -38,14 +49,5 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-      env:
-      # Postgres Test
-        TEST_DB_HOST: postgres_test                      
-# TEST_DB_HOST=127.0.0.1                        # when running the app without docker 
-        TEST_DB_DRIVER: postgres
-        TEST_API_SECRET: 98hbun98h
-        TEST_DB_USER: root
-        TEST_DB_PASSWORD: apirestgo
-        TEST_DB_NAME: cyrkl_api_test
-        TEST_DB_PORT: 5432
+      
   
