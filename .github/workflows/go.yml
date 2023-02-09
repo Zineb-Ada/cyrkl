@@ -8,21 +8,14 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-env:
-  DB_HOST: cyrkl-postgres                      
-  DB_DRIVER: postgres
-  API_SECRET: 98hbun98h                            
-  DB_USER: root
-  DB_PASSWORD: apirestgo
-  DB_NAME: cyrkl
-  DB_PORT: 5432
-  TEST_DB_HOST: postgres_test                      
-  TEST_DB_DRIVER: postgres
-  TEST_API_SECRET: 98hbun98h
-  TEST_DB_USER: root
-  TEST_DB_PASSWORD: apirestgo
-  TEST_DB_NAME: cyrkl_api_test
-  TEST_DB_PORT: 5432
+# env:
+#   DB_HOST: cyrkl-postgres                      
+#   DB_DRIVER: postgres
+#   API_SECRET: 98hbun98h                            
+#   DB_USER: root
+#   DB_PASSWORD: apirestgo
+#   DB_NAME: cyrkl
+#   DB_PORT: 5432
   
 jobs:
 
