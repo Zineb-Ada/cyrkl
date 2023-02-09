@@ -1,0 +1,139 @@
+' @startuml Inscription
+' |#pink|User|
+' start
+' :Inscription;
+' |#lightgray|Main Admin|
+' #lightgray:**Vérification des données**;
+' if (Critères de séléctions) is (OK) then
+' #pink:**Validation du User**;
+' :Envoie de mail de validation;
+' stop
+' else (NO)
+' :Envoie de mail de refus;
+' stop
+' @enduml
+
+@startuml Connexion
+start
+repeat :L'utilisateur saisi ses informations de connexion. Mail et mot de passe;
+:L'utilisateur valide;
+:Le système vérifie la paire Mail/Mdp dans la BDD;
+backward :Le système affiche un message d'erreur;
+repeat while (données correctes) is (NON) not (OUI)
+stop
+@enduml
+
+' @startuml Gestion_user_profil
+' start
+' :Le sytème charge les données;
+' :Le système construit la vue par défaut;
+' :L'utilisateur consulte ses données;
+' note right
+'   Actions Possibles
+'   ====
+'   * L'utilisateur peut modifier, 
+'   ajouter ou supprimer ses données
+' end note
+' stop
+' @enduml
+
+' @startuml Gestion_user_calendar
+' start
+' :Le sytème charge les données du calendrier;
+' :Le système construit la vue par défaut;
+' :L'utilisateur consulte son calendrier;
+' note right
+'   Actions Possibles
+'   ====
+'   * L'utilisateur peut modifier, 
+'   ajouter ou supprimer la date, l'heure 
+'   et la zone géographique de ses disponnibilités
+' end note
+' stop
+' @enduml
+
+' @startuml Gestion_invitations
+' start
+' :Le sytème charge les données de la vue associé;
+' if (Invitations) is (Envoyés) then
+' :Consulter, modifier ou annuler les invitations acceptées, refusées ou en cours;
+' stop
+' else (Reçues)
+' :Consulter, modifier ou annuler les invitations acceptées, refusées ou en cours;
+' stop
+' @enduml
+
+' @startuml Recherche_swipe
+' start
+' :Le sytème charge les données;
+' :Le système construit les vues par défaut;
+' :L'utilisateur consulte et navigue entre les vues;
+' repeat :swiper; 
+'     note right
+'         L'utilisateur peut scroller pour voir plus 
+'         d'information sur le profil (version mobile)
+'         end note
+' switch (Profil)
+'     case (Intéressé)
+'         fork 
+'             :Goldlister;
+'             :Retrouve le profil dans ses favoris;
+'         fork again
+'             :Planifier un déjeuner;
+'         end fork
+'     case (Indifférent)
+'     case (Pas intéressé)
+'             :Blacklister;
+'             :Profil retiré de la liste des propositions de l'utilisateur;
+' endswitch
+' @enduml
+
+' @startuml Planifier_déjeuner
+' start
+' :Le sytème charge les données;
+' :Le système construit les vues par défaut;
+' :L'utilisateur consulte et navigue entre les vues;
+' repeat:Planifier un déjeuner;
+' switch (Invitation)
+'     case (envoyée)
+'         :Clique sur le bouton inviter;
+'         :Vue sur les disponnibilités du profil;
+'         :Proposer un déjeuner en fonction de la zone 
+'         géographique, l'heure et la date disponnible;
+'         stop
+'     case (reçue)
+'         :Réception d'une notification;
+'         :Vue sur la liste des invitations reçues;
+'         fork 
+'             :Valider;
+'             stop
+'         fork again
+'             :Refuser;
+'             note right
+'                 Possibilité de 
+'                 blacklister l'utilisateur
+'                 end note
+'             end
+'         fork again
+'             :Goldlister;
+'             stop
+'         fork again
+'             :Modifier;
+'         end merge
+' endswitch
+' @enduml
+
+' @startuml Gestion_users_profil
+' start
+' :Le sytème charge les données;
+' :Le système construit la vue associée;
+' :L'administrateur a un accès total à la base de données;
+' note right
+'   Actions Possibles
+'   ====
+'   L'administrateur peut modifier, ajouter ou supprimer 
+'   les données de tous les utilisateurs
+' end note
+
+' stop
+' @enduml

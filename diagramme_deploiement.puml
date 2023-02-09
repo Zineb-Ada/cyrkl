@@ -1,0 +1,35 @@
+@startuml deploiement
+skinparam actorStyle awesome
+left to right direction
+node interface [
+<b>Interface
+----
+   React
+]
+artifact Serveur_OVH {
+artifact Nginx
+}
+:User: <-->> interface
+
+database database [
+<b>  PostgreSQL 
+      Database
+]
+node Docker [
+<b>Docker containers
+----
+        Database
+====
+        Api Rest
+]
+usecase API [
+<b>API Rest
+----
+Golang
+]
+API <-->> database :GORM
+interface <-->> Docker:Envoie et réception des requêtes
+Docker -[thickness=8]->> Serveur_OVH:Déployé dans
+Docker -->> API:Conteneurise
+Docker -->> database:Conteneurise
+@enduml

@@ -1,0 +1,28 @@
+@startuml etat
+hide empty description
+[*] --> Etat_initiale
+Etat_initiale --> Attente_validation
+Etat_initiale : L'utilisateur s'inscrit
+Attente_validation --> Validation_création_profil
+Attente_validation : L'utilisateur attend la validation de son compte
+Validation_création_profil --> Profil_complet
+Validation_création_profil : Validation par l'administrateur;
+Validation_création_profil : Compte utilisateur actif
+Profil_complet --> Recherche_en_cours
+Profil_complet : Remplir/mettre à jour son calendrier;
+Profil_complet : compléter toutes les informations nécessaires sur son profil
+Recherche_en_cours --> Matching
+Recherche_en_cours : L'utilisateur swipe pour trouver des correspondances potentielles
+Matching --> Profil_intéressant_trouvé
+Matching : L'application filtre et propose les profils les plus pertinents à l'utilisateur
+Profil_intéressant_trouvé --> Invitation
+Profil_intéressant_trouvé --> Conversation_en_cours
+Invitation --> Recontre_planifiée
+Invitation : L'utilisateur envoie une invitation
+Conversation_en_cours --> Recontre_planifiée
+Recontre_planifiée --> Rencontre_effectuée
+Recontre_planifiée : Les utilisateurs potentiels ont planifié un déjeuner
+Rencontre_effectuée --> Feedback
+Feedback --> [*]
+Feedback : Feedback de la recontre sur la base de plusieurs critères
+@enduml

@@ -1,0 +1,27 @@
+@startuml usecase
+
+left to right direction
+skinparam actorStyle awesome
+package Système {
+  usecase "Connexion" as UC1
+  usecase "Gérer son profil" as UC2
+  usecase "Gérer son calendrier" as UC3
+  usecase "Gérer les invitations" as UC4
+  usecase "Rechercher (swipper)" as UC5
+  usecase "Planifier un déjeuner" as UC6
+  usecase "Vérification des données" as UC7
+  usecase "Validation des comptes" as UC8
+  usecase "Gestion des données" as UC9
+}
+:User: --> UC1
+:User: --> UC2
+:User: --> UC3
+:User: --> UC4
+:User: --> UC5
+:User: --> UC6
+"Main Admin" as Admin
+:Admin: --> UC7
+:Admin: --> UC8
+:Admin: --> UC9
+:User: <. :Admin: : extends
+@enduml

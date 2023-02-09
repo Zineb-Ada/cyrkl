@@ -1,0 +1,15 @@
+' @startuml Invitation
+' Laurie -> Zineb: Requête d'invitation
+' Zineb --> Laurie: Réponse (valider, refuser ou modifier)
+
+' Zineb -> Laurie: Requête de l'invitation modifiée
+' Laurie --> Zineb: Réponse
+' @enduml
+
+@startuml Message
+Laurie -> Zineb: Message 1
+Zineb --> Laurie: Message 2
+
+Laurie -> Zineb: Message 3
+Zineb --> Laurie: Message 4
+@enduml
