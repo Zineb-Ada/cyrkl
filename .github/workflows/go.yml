@@ -8,19 +8,29 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-# env:
-#   DB_HOST: cyrkl-postgres                      
-#   DB_DRIVER: postgres
-#   API_SECRET: 98hbun98h                            
-#   DB_USER: root
-#   DB_PASSWORD: apirestgo
-#   DB_NAME: cyrkl
-#   DB_PORT: 5432
   
 jobs:
 
   build:
     runs-on: ubuntu-latest
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: rt  
+          POSTGRES_PASSWORD: encorerien
+          POSTGRES_DB: cyrkl_api_test
+        ports: ['5432:5432']
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v3
 
@@ -33,4 +43,8 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: go test -v ./...
+      run: | 
+        cp .env.test .env
+        go test -v ./...
+
+
