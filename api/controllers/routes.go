@@ -17,4 +17,12 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUser))).Methods("PUT")
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")
 
+	// calendar routes
+	s.Router.HandleFunc("/calendar", middlewares.SetMiddlewareJSON(s.CreateDate)).Methods("POST")
+	s.Router.HandleFunc("/calendar", middlewares.SetMiddlewareJSON(s.GetCalendar)).Methods("GET")
+	s.Router.HandleFunc("/calendar/{id}", middlewares.SetMiddlewareJSON(s.GetDate)).Methods("GET")
+	s.Router.HandleFunc("/calendar/user/{user_id}", middlewares.SetMiddlewareJSON(s.GetUsersCalendarByUserID)).Methods("GET")
+	s.Router.HandleFunc("/calendar/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateDate))).Methods("PUT")
+	s.Router.HandleFunc("/calendar/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteDate)).Methods("DELETE")
+
 }

@@ -15,8 +15,8 @@ func FormatError(err string) error {
 		return errors.New("Email Already Taken")
 	}
 
-	// if strings.Contains(err, "title") {
-	// 	return errors.New("Title Already Taken")
+	// if timeformat.Contains(err, "dateandhours") {
+	// 	return errors.New("date Already full")
 	// }
 	if strings.Contains(err, "hashedPassword") {
 		return errors.New("Incorrect Password")
