@@ -13,11 +13,10 @@ type Calendar struct {
 	ID           uint32    `gorm:"primary_key;auto_increment" json:"id"`
 	UserID       uint32    `gorm:"index" json:"user_id"`
 	Dateandhours time.Time `gorm:"size:255" json:"dateandhours"`
-	// Heure     string    `gorm:"size:255" json:"heure"`
-	Lieu      string    `gorm:"size:255" json:"lieu"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Userc     User      `gorm:"ForeignKey:UserID" json:"user"`
+	Lieu         string    `gorm:"size:255" json:"lieu"`
+	CreatedAt    time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt    time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Userc        User      `gorm:"ForeignKey:UserID" json:"user"`
 }
 
 func (c *Calendar) PrepareCalendar() {
