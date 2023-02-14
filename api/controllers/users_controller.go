@@ -15,8 +15,15 @@ import (
 	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
 )
 
-func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
+func enableCors(w *http.ResponseWriter) {
+	header := (*w).Header()
+	header.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
+	header.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	header.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
+}
 
+func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -47,7 +54,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
-
+	enableCors(&w)
 	user := models.User{}
 
 	users, err := user.FindAllUsers(server.DB)
@@ -59,7 +66,7 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
-
+	enableCors(&w)
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -76,7 +83,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
-
+	enableCors(&w)
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -119,7 +126,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
-
+	enableCors(&w)
 	vars := mux.Vars(r)
 
 	user := models.User{}
