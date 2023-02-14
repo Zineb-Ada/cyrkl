@@ -30,6 +30,6 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/invitationreceived", middlewares.SetMiddlewareJSON(s.GetRdInvitions)).Methods("GET")
 	s.Router.HandleFunc("/invitationreceived/{id}", middlewares.SetMiddlewareJSON(s.GetRdInvitation)).Methods("GET")
 	s.Router.HandleFunc("/invitationreceived/user/{user_receiver_id}", middlewares.SetMiddlewareJSON(s.GetUsersRdInvitationByUserID)).Methods("GET")
-	s.Router.HandleFunc("/invitationreceived/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateRdInvitation))).Methods("PUT")
+	// s.Router.HandleFunc("/invitationreceived/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateRdInvitation))).Methods("PUT")
 
 }
