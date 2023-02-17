@@ -18,18 +18,22 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")
 
 	// calendar routes
-	s.Router.HandleFunc("/calendar", middlewares.SetMiddlewareJSON(s.CreateDate)).Methods("POST")
-	s.Router.HandleFunc("/calendar", middlewares.SetMiddlewareJSON(s.GetCalendar)).Methods("GET")
-	s.Router.HandleFunc("/calendar/{id}", middlewares.SetMiddlewareJSON(s.GetDate)).Methods("GET")
-	s.Router.HandleFunc("/calendar/user/{user_id}", middlewares.SetMiddlewareJSON(s.GetUsersCalendarByUserID)).Methods("GET")
-	s.Router.HandleFunc("/calendar/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateDate))).Methods("PUT")
-	s.Router.HandleFunc("/calendar/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteDate)).Methods("DELETE")
+	s.Router.HandleFunc("/slot", middlewares.SetMiddlewareJSON(s.CreateSlot)).Methods("POST")
+	s.Router.HandleFunc("/slots", middlewares.SetMiddlewareJSON(s.GetSlots)).Methods("GET")
+	s.Router.HandleFunc("/slot/{id}", middlewares.SetMiddlewareJSON(s.GetSlotByID)).Methods("GET")
+	s.Router.HandleFunc("/slots/{user_id}", middlewares.SetMiddlewareJSON(s.GetUsersSlotsByUserID)).Methods("GET")
+	s.Router.HandleFunc("/slot/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateSlot))).Methods("PUT")
+	s.Router.HandleFunc("/slot/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteSlot)).Methods("DELETE")
 
 	// Invitations routes
-	s.Router.HandleFunc("/invitationreceived", middlewares.SetMiddlewareJSON(s.CreateReceivedInvitation)).Methods("POST")
-	s.Router.HandleFunc("/invitationreceived", middlewares.SetMiddlewareJSON(s.GetRdInvitions)).Methods("GET")
-	s.Router.HandleFunc("/invitationreceived/{id}", middlewares.SetMiddlewareJSON(s.GetRdInvitation)).Methods("GET")
-	s.Router.HandleFunc("/invitationreceived/user/{user_receiver_id}", middlewares.SetMiddlewareJSON(s.GetUsersRdInvitationByUserID)).Methods("GET")
-	// s.Router.HandleFunc("/invitationreceived/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateRdInvitation))).Methods("PUT")
+	s.Router.HandleFunc("/invitation", middlewares.SetMiddlewareJSON(s.CreateInvitation)).Methods("POST")
+	s.Router.HandleFunc("/invitations", middlewares.SetMiddlewareJSON(s.GetInvitions)).Methods("GET")
+	s.Router.HandleFunc("/invitation/{id}", middlewares.SetMiddlewareJSON(s.GetInvitationByID)).Methods("GET")
+	s.Router.HandleFunc("/invitationreceived/user/{user_receiver_id}", middlewares.SetMiddlewareJSON(s.GetInvitationByUserID)).Methods("GET")
+	s.Router.HandleFunc("/invitationreceived/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateInvitation))).Methods("PUT")
+	s.Router.HandleFunc("/slot/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteDate)).Methods("DELETE")
+
+	// routes de la liste des Users triés par ordre de pertinence par l'algorithme
+	s.Router.HandleFunc("/usersalgo/{id}", middlewares.SetMiddlewareJSON(s.GetInvitions)).Methods("GET")
 
 }

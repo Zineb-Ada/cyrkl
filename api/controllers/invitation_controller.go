@@ -15,83 +15,75 @@ import (
 	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
 )
 
-func (server *Server) CreateDate(w http.ResponseWriter, r *http.Request) {
+func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	date := models.Calendar{}
-	err = json.Unmarshal(body, &date)
+	invitation := models.Invitation{}
+	err = json.Unmarshal(body, &invitation)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	date.PrepareCalendar()
-	err = date.ValidateCalendar()
-	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
-		return
-	}
+	invitation.PrepareInvitation()
 	uid, err := auth.ExtractTokenID(r)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
-	if uid != date.UserID {
+	if uid != invitation.InviterID {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
 		return
 	}
-	dateCreated, err := date.SaveDate(server.DB)
+	invitationCreated, err := invitation.SaveInvitation(server.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
-	w.Header().Set("Lacation", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, dateCreated.ID))
-	responses.JSON(w, http.StatusCreated, dateCreated)
+	w.Header().Set("Lacation", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, invitationCreated.ID))
+	responses.JSON(w, http.StatusCreated, invitationCreated)
 }
 
-func (server *Server) GetCalendar(w http.ResponseWriter, r *http.Request) {
+func (server *Server) GetInvitions(w http.ResponseWriter, r *http.Request) {
+	invitationsReceived := models.Invitation{}
 
-	calendar := models.Calendar{}
-
-	calendars, err := calendar.FindAllCalendar(server.DB)
+	invitations, err := invitationsReceived.FindInvitations(server.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, calendars)
+	responses.JSON(w, http.StatusOK, invitations)
 }
 
-func (server *Server) GetDate(w http.ResponseWriter, r *http.Request) {
-
+func (server *Server) GetInvitationByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	inid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	date := models.Calendar{}
-
-	dateReceived, err := date.FindDateByID(server.DB, pid)
+	invitation := models.Invitation{}
+	invitationReceived, err := invitation.FindInvitatByID(server.DB, inid)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, dateReceived)
+	responses.JSON(w, http.StatusOK, invitationReceived)
 }
 
-func (server *Server) GetUsersCalendarByUserID(w http.ResponseWriter, r *http.Request) {
+func (server *Server) GetInvitationByUserID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	userID, err := strconv.ParseUint(vars["user_id"], 10, 64)
+	userID, err := strconv.ParseUint(vars["user_receiver_id"], 10, 64)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		responses.ERROR(w, http.StatusBadRequest, errors.New("missing user_id in the request"))
 		return
 	}
-	dates := models.Calendar{}
-	datesReceived, err := dates.FindCalendarsByUserID(server.DB, userID)
+	invitationsreceived := models.Invitation{}
+	datesReceived, err := invitationsreceived.FindInvitByUserID(server.DB, userID)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -99,9 +91,12 @@ func (server *Server) GetUsersCalendarByUserID(w http.ResponseWriter, r *http.Re
 	responses.JSON(w, http.StatusOK, datesReceived)
 }
 
-func (server *Server) UpdateDate(w http.ResponseWriter, r *http.Request) {
+// Cette fonction est plus createDate 
+func (server *Server) UpdateInvitation(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	cid, err := strconv.ParseUint(vars["id"], 10, 64)
+	inid, err := strconv.ParseUint(vars["id"], 10, 64)
+	fmt.Printf("irid 97 : %d", inid)
+
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -111,15 +106,14 @@ func (server *Server) UpdateDate(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	date := models.Calendar{}
-	err = json.Unmarshal(body, &date)
+	invitation := models.Invitation{}
+	err = json.Unmarshal(body, &invitation)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	date.PrepareCalendar()
-	date.ID = uint32(cid)
-	err = date.ValidateCalendar()
+	invitation.PrepareInvitation()
+	invitation.ID = uint32(inid)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
@@ -129,26 +123,27 @@ func (server *Server) UpdateDate(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
-	if uid != date.UserID {
+
+	if uid != invitation.InviterID {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
 		return
 	}
-	dateUpdated, err := date.UpdateADate(server.DB, cid)
+	dateCreated, err := invitation.UpdateInvit(server.DB, inid)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
-	responses.JSON(w, http.StatusOK, dateUpdated)
+	responses.JSON(w, http.StatusOK, dateCreated)
 }
 
 func (server *Server) DeleteDate(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 
-	date := models.Calendar{}
+	date := models.Invitation{}
 
-	cid, err := strconv.ParseUint(vars["id"], 10, 64)
+	inid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -158,12 +153,16 @@ func (server *Server) DeleteDate(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
-	userID := date.UserID
-	_, err = date.DeleteADate(server.DB, cid, uid)
+	userName := date.Slotd.Userc.Name
+	_, err = date.DeleteInvit(server.DB, inid, uid)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	w.Header().Set("Entity", fmt.Sprintf("user %d has deleted date %d", userID, cid))
+	w.Header().Set("Entity", fmt.Sprintf("user %s has deleted date %d", userName, inid))
 	responses.JSON(w, http.StatusNoContent, "")
 }
+
+// fonctions à rajouter : getInvitationbyrefusé et getInvitbyaccepté et peut être getInvitationbyrefuséet accepté
+// getInvitationbyacceptébyuserid; getInvitationbyrefusébyuserid
+// invitations recues et envoyées (refusé et accepté) GetInvitationsReceivedAndSendedAccepté GetInvitationsRAndSrefusé par user
