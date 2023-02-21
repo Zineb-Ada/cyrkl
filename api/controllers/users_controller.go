@@ -103,11 +103,16 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tokenID, err := auth.ExtractTokenID(r)
+
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
+	fmt.Printf("avant condition 111 %d", tokenID)
+	fmt.Printf("avant condition 112 %d", uid)
 	if tokenID != uint32(uid) {
+		fmt.Printf("après condition 114 %d", tokenID)
+		fmt.Printf("avant condition 115 %d", uid)
 		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
 		return
 	}
