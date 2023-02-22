@@ -8,6 +8,14 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// type InvitationStatus int
+
+// const (
+//     InProgress InvitationStatus = iota
+//     Accepted
+//     Refused
+// )
+
 type Invitation struct {
 	ID        uint32 `gorm:"primary_key;auto_increment" json:"id"`
 	InviterID uint32 `gorm:"index" json:"inviter_id"`
@@ -165,6 +173,36 @@ func (in *Invitation) FindInvitsReceivedByInvitedID(db *gorm.DB, userID uint64) 
 	return &invitations, nil
 }
 
+func (in *Invitation) FindInvitsReceivedByInvitedIDWithStatus(db *gorm.DB, userID uint64, status string) (*[]Invitation, error) {
+	var err error
+	invitations := []Invitation{}
+	err = db.Debug().Model(&Invitation{}).Where("invited_id = ? AND statut = ?", userID, status).Find(&invitations).Error
+	if err != nil {
+		return nil, err
+	}
+	if len(invitations) > 0 {
+		for i, _ := range invitations {
+			err = db.Debug().Model(&User{}).Where("id = ?", invitations[i].InviterID).Take(&invitations[i].Inviter).Error
+			if err != nil {
+				return nil, err
+			}
+			err = db.Debug().Model(&User{}).Where("id = ?", invitations[i].InvitedID).Take(&invitations[i].Invited).Error
+			if err != nil {
+				return nil, err
+			}
+			err = db.Debug().Model(&Slot{}).Where("id = ?", invitations[i].SlotID).Take(&invitations[i].Slotd).Error
+			if err != nil {
+				return nil, err
+			}
+			err = db.Debug().Model(&User{}).Where("id = ?", invitations[i].Slotd.UserID).Take(&invitations[i].Slotd.Userc).Error
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return &invitations, nil
+}
+
 func (in *Invitation) FindInvitSendedByInviterID(db *gorm.DB, userID uint64) (*[]Invitation, error) {
 	var err error
 	invitations := []Invitation{}
@@ -195,72 +233,53 @@ func (in *Invitation) FindInvitSendedByInviterID(db *gorm.DB, userID uint64) (*[
 	return &invitations, nil
 }
 
+func (in *Invitation) FindInvitsSendedByInviterIDWithStatus(db *gorm.DB, userID uint64, status string) (*[]Invitation, error) {
+	var err error
+	invitations := []Invitation{}
+	err = db.Debug().Model(&Invitation{}).Where("inviter_id = ? AND statut = ?", userID, status).Find(&invitations).Error
+	if err != nil {
+		return nil, err
+	}
+	if len(invitations) > 0 {
+		for i, _ := range invitations {
+			err = db.Debug().Model(&User{}).Where("id = ?", invitations[i].InviterID).Take(&invitations[i].Inviter).Error
+			if err != nil {
+				return nil, err
+			}
+			err = db.Debug().Model(&User{}).Where("id = ?", invitations[i].InvitedID).Take(&invitations[i].Invited).Error
+			if err != nil {
+				return nil, err
+			}
+			err = db.Debug().Model(&Slot{}).Where("id = ?", invitations[i].SlotID).Take(&invitations[i].Slotd).Error
+			if err != nil {
+				return nil, err
+			}
+			err = db.Debug().Model(&User{}).Where("id = ?", invitations[i].Slotd.UserID).Take(&invitations[i].Slotd.Userc).Error
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return &invitations, nil
+}
+
 func (in *Invitation) UpdateInvit(db *gorm.DB, inid uint64) (*Invitation, error) {
-	// var err error
-	db = db.Debug().Model(&Invitation{}).Where("id = ?", inid).Take(&Invitation{}).UpdateColumns(
-		map[string]interface{}{
-			"statut":     in.Statut,
-			"inviter_id": in.InviterID,
-			"invited_id": in.InvitedID,
-			"slot_id":    in.SlotID,
-			"updated_at": time.Now(),
-		},
-	)
+	var err error
+	var oldinvit Invitation
+	err = db.Debug().Model(&Invitation{}).Where("id = ?", inid).Find(&Invitation{}).Error
 	if db.Error != nil {
 		return &Invitation{}, db.Error
 	}
-	// var oldInvit Invitation
-	// err = db.Debug().Model(&Invitation{}).Where("id = ?", inid).Find(&oldInvit).Error
-	// if err != nil {
-	// 	return &Invitation{}, err
-	// }
-	// oldInvit.Statut = in.Statut
-	// // oldInvit.SlotID = in.SlotID
-	// fmt.Printf("statut 159 : %s", in.Statut)
-	// fmt.Printf("oldinvit 160 : %s", oldInvit.Statut)
-	// oldInvit.UpdatedAt = time.Now()
-
-	// // if oldInvit.InvitedID != oldInvit.Slotd.UserID {
-	// // 	return &Invitation{}, errors.New("You are unauthorized for update Invition")
-	// // }
-	// // if in.SlotID != in.Slotd.ID {
-	// // 	return &Invitation{}, errors.New("Incorrect Slot.ID, you are unauthorized for update Invition")
-	// // }
-	// // && in.SlotID == oldInvit.Slotd.ID
-	// err = db.Debug().Model(&User{}).Where("id = ?", in.Slotd.UserID).Take(&in.Slotd.Userc).Error
-	// if err != nil {
-	// 	return &Invitation{}, err
-	// }
-	// if in.InvitedID == in.Slotd.UserID {
-	// 	err = db.Debug().Model(&oldInvit).Update(oldInvit).Error
-	// 	if err != nil {
-	// 		return &Invitation{}, errors.New("Incorrect InvitedID, you are unauthorized for update Invition")
-	// 	}
-	// } else {
-	// 	return nil, errors.New("Incorrect InvitedID, you are unauthorized for update Invition")
-	// }
-
-	// if in.InvitedID != in.Slotd.UserID || in.InvitedID == in.InviterID {
-	// 	return &Invitation{}, errors.New("You are unauthorized for update Invition")
-	// }
-	// if in.ID != 0 {
-	// err = db.Debug().Model(&User{}).Where("id = ?", in.InviterID).Find(&in.Inviter).Error
-	// if err != nil {
-	// 	return &Invitation{}, err
-	// }
-	// err = db.Debug().Model(&User{}).Where("id = ?", in.InvitedID).Find(&in.Invited).Error
-	// if err != nil {
-	// 	return &Invitation{}, err
-	// }
-	// err = db.Debug().Model(&Slot{}).Where("id = ?", in.SlotID).Find(&in.Slotd).Error
-	// if err != nil {
-	// 	return &Invitation{}, err
-	// }
-	// err = db.Debug().Model(&User{}).Where("id = ?", in.Slotd.UserID).Find(&in.Slotd.Userc).Error
-	// if err != nil {
-	// 	return &Invitation{}, err
-	// }
-	// }
+	// if oldinvit.invitedID 
+	if len(in.Statut) > 0 {
+		oldinvit.Statut = in.Statut
+		oldinvit.UpdatedAt = time.Now()
+		err = db.Debug().Model(&Invitation{}).Where("id = ?", inid).Updates(oldinvit).Error
+		if err != nil {
+			return &Invitation{}, err
+		}
+	}
+	err = db.Debug().Model(&Invitation{}).Where("id = ?", inid).Take(in).Error
 	return in, nil
 }
 
@@ -276,5 +295,3 @@ func (in *Invitation) DeleteInvit(db *gorm.DB, inid uint64, uid uint32) (int64, 
 	}
 	return db.RowsAffected, nil
 }
-
-// func (in *Invitation)
