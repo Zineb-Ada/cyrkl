@@ -29,7 +29,8 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/invitation", middlewares.SetMiddlewareJSON(s.CreateInvitation)).Methods("POST")
 	s.Router.HandleFunc("/invitations", middlewares.SetMiddlewareJSON(s.GetInvitions)).Methods("GET")
 	s.Router.HandleFunc("/invitation/{id}", middlewares.SetMiddlewareJSON(s.GetInvitationByID)).Methods("GET")
-	s.Router.HandleFunc("/invitation/user/{invited_id}", middlewares.SetMiddlewareJSON(s.GetInvitationByUserID)).Methods("GET")
+	s.Router.HandleFunc("/invitationsreceived/user/{invited_id}", middlewares.SetMiddlewareJSON(s.GetInvitationsReceivedByInvitedID)).Methods("GET")
+	s.Router.HandleFunc("/invitationssended/user/{inviter_id}", middlewares.SetMiddlewareJSON(s.GetInvitationsSendedByInviterID)).Methods("GET")
 	s.Router.HandleFunc("/updateinvitation/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateInvitation))).Methods("PUT")
 	s.Router.HandleFunc("/deleteinvitation/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteDate)).Methods("DELETE")
 
