@@ -144,7 +144,6 @@ func (server *Server) GetInvitationsSendedByInviterID(w http.ResponseWriter, r *
 	responses.JSON(w, http.StatusOK, datesReceived)
 }
 
-
 func (server *Server) GetInvitationsSendedByInviterIDWithStatus(w http.ResponseWriter, r *http.Request) {
 	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
@@ -170,7 +169,6 @@ func (server *Server) GetInvitationsSendedByInviterIDWithStatus(w http.ResponseW
 	}
 	responses.JSON(w, http.StatusOK, datesReceived)
 }
-
 
 // Update Invitation
 func (server *Server) CreateDate(w http.ResponseWriter, r *http.Request) {
