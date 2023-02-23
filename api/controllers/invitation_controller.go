@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/zineb-ada/cyrkl/api/auth"
@@ -16,6 +17,7 @@ import (
 )
 
 func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -37,6 +39,9 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
 		return
 	}
+	if len(invitation.Statut) > 0 {
+		invitation.Statut = strings.ToLower(invitation.Statut)
+	}
 	invitationCreated, err := invitation.SaveInvitation(server.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
@@ -48,9 +53,10 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetInvitions(w http.ResponseWriter, r *http.Request) {
-	invitationsReceived := models.Invitation{}
+	enableCors(&w)
+	invitation := models.Invitation{}
 
-	invitations, err := invitationsReceived.FindInvitations(server.DB)
+	invitations, err := invitation.FindInvitations(server.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -59,6 +65,7 @@ func (server *Server) GetInvitions(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetInvitationByID(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	vars := mux.Vars(r)
 	inid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
@@ -74,7 +81,8 @@ func (server *Server) GetInvitationByID(w http.ResponseWriter, r *http.Request) 
 	responses.JSON(w, http.StatusOK, invitationReceived)
 }
 
-func (server *Server) GetInvitationByUserID(w http.ResponseWriter, r *http.Request) {
+func (server *Server) GetInvitationsReceivedByInvitedID(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	vars := mux.Vars(r)
 	userID, err := strconv.ParseUint(vars["invited_id"], 10, 64)
 	if err != nil {
@@ -83,7 +91,7 @@ func (server *Server) GetInvitationByUserID(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	invitationsreceived := models.Invitation{}
-	datesReceived, err := invitationsreceived.FindInvitreceiverByUserID(server.DB, userID)
+	datesReceived, err := invitationsreceived.FindInvitsReceivedByInvitedID(server.DB, userID)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -91,16 +99,91 @@ func (server *Server) GetInvitationByUserID(w http.ResponseWriter, r *http.Reque
 	responses.JSON(w, http.StatusOK, datesReceived)
 }
 
-// Cette fonction est plus createDate
-func (server *Server) UpdateInvitation(w http.ResponseWriter, r *http.Request) {
+func (server *Server) GetInvitationsReceivedByInvitedIDWithStatus(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	vars := mux.Vars(r)
-	inid, err := strconv.ParseUint(vars["id"], 10, 64)
-	fmt.Printf("irid 97 : %d", inid)
-
+	fmt.Println(vars)
+	userID, err := strconv.ParseUint(vars["invited_id"], 10, 64)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
+	status := vars["status"]
+	if len(status) > 0 {
+		status = strings.ToLower(status)
+	}
+	if status != "in progress" && status != "accepted" && status != "refused" {
+		responses.ERROR(w, http.StatusBadRequest, errors.New("invalid status value"))
+		return
+	}
+	invitationsreceived := models.Invitation{}
+	datesReceived, err := invitationsreceived.FindInvitsReceivedByInvitedIDWithStatus(server.DB, userID, status)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, datesReceived)
+}
+
+func (server *Server) GetInvitationsSendedByInviterID(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	vars := mux.Vars(r)
+	userID, err := strconv.ParseUint(vars["inviter_id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		responses.ERROR(w, http.StatusBadRequest, errors.New("missing user_id in the request"))
+		return
+	}
+	invitationsreceived := models.Invitation{}
+	datesReceived, err := invitationsreceived.FindInvitSendedByInviterID(server.DB, userID)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, datesReceived)
+}
+
+func (server *Server) GetInvitationsSendedByInviterIDWithStatus(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	vars := mux.Vars(r)
+	fmt.Println(vars)
+	userID, err := strconv.ParseUint(vars["inviter_id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	status := vars["status"]
+	if len(status) > 0 {
+		status = strings.ToLower(status)
+	}
+	if status != "in progress" && status != "accepted" && status != "refused" {
+		responses.ERROR(w, http.StatusBadRequest, errors.New("invalid status value"))
+		return
+	}
+	invitationsreceived := models.Invitation{}
+	datesReceived, err := invitationsreceived.FindInvitsSendedByInviterIDWithStatus(server.DB, userID, status)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, datesReceived)
+}
+
+func enableCors(responseWriter *http.ResponseWriter) {
+	panic("unimplemented")
+}
+
+// Update Invitation 
+func (server *Server) CreateDate(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
+	vars := mux.Vars(r)
+	inid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -112,54 +195,36 @@ func (server *Server) UpdateInvitation(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	// invitationst := invitation.Statut
-	// fmt.Printf("invitstatut 116 : %s", invitationst)
-	// invitation.PrepareInvitation("update")
+	invitation.PrepareInvitation("update")
 	invitation.ID = uint32(inid)
-	// invitation.Statut = invitationst
-	// fmt.Printf("invitstatut 120 : %s", invitationst)
-	fmt.Printf("invitation_ID 121 : %d", inid)
+	if len(invitation.Statut) > 0 {
+		invitation.Statut = strings.ToLower(invitation.Statut)
+	}
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	uid, err := auth.ExtractTokenID(r)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
-	// if uid == invitation.InviterID {
-
-	// }
-	if uid != invitation.InvitedID {
-		fmt.Printf("uid 129 : %d", uid)
-		fmt.Printf("slot 129 : %d", invitation.SlotID)
-		fmt.Printf("invited 129 : %d", invitation.InvitedID)
-		fmt.Printf("inviter 135 : %d", invitation.InviterID)
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
-	// if uid != invitation.SlotID {
-	// 	fmt.Printf("uid 129 : %d", uid)
-	// 	fmt.Printf("invited 129 : %d", invitation.InviterID)
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+	// uid, err := auth.ExtractTokenID(r)
+	// if err != nil {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 	// 	return
 	// }
-	// ajouter une condition sur slot.ID
-	// if uid == invitation.InvitedID {
+	// if uid != invitation.InvitedID {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 	return
+	// }
 	dateCreated, err := invitation.UpdateInvit(server.DB, inid)
 	fmt.Printf("datecreated : 151 controlers %v", dateCreated)
 	if err != nil {
-		// formattedError := formaterror.FormatError(err.Error())
-		responses.ERROR(w, http.StatusInternalServerError, err)
+		formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
 	responses.JSON(w, http.StatusOK, dateCreated)
-	// }
-
 }
 
 func (server *Server) DeleteDate(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 
 	vars := mux.Vars(r)
 
@@ -184,7 +249,3 @@ func (server *Server) DeleteDate(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Entity", fmt.Sprintf("user %s has deleted date %d", userName, inid))
 	responses.JSON(w, http.StatusNoContent, "")
 }
-
-// fonctions à rajouter : getInvitationbyrefusé et getInvitbyaccepté et peut être getInvitationbyrefuséet accepté
-// getInvitationbyacceptébyuserid; getInvitationbyrefusébyuserid
-// invitations recues et envoyées (refusé et accepté) GetInvitationsReceivedAndSendedAccepté GetInvitationsRAndSrefusé par user
