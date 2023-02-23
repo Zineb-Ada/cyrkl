@@ -26,7 +26,7 @@ func SetMiddlewareAuthentication(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func enableCors(w *http.ResponseWriter) {
+func EnableCors(w *http.ResponseWriter) {
 	header := (*w).Header()
 	header.Set("Access-Control-Allow-Origin", "*")
 	header.Set("Access-Control-Allow-Credentials", "true")

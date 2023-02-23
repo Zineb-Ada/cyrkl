@@ -14,10 +14,11 @@ import (
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
 	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
+	"github.com/zineb-ada/cyrkl/api/middlewares"
 )
 
 func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -53,7 +54,7 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetInvitions(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	invitation := models.Invitation{}
 
 	invitations, err := invitation.FindInvitations(server.DB)
@@ -65,7 +66,7 @@ func (server *Server) GetInvitions(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetInvitationByID(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	inid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
@@ -82,7 +83,7 @@ func (server *Server) GetInvitationByID(w http.ResponseWriter, r *http.Request) 
 }
 
 func (server *Server) GetInvitationsReceivedByInvitedID(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	userID, err := strconv.ParseUint(vars["invited_id"], 10, 64)
 	if err != nil {
@@ -100,7 +101,7 @@ func (server *Server) GetInvitationsReceivedByInvitedID(w http.ResponseWriter, r
 }
 
 func (server *Server) GetInvitationsReceivedByInvitedIDWithStatus(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	fmt.Println(vars)
 	userID, err := strconv.ParseUint(vars["invited_id"], 10, 64)
@@ -126,7 +127,7 @@ func (server *Server) GetInvitationsReceivedByInvitedIDWithStatus(w http.Respons
 }
 
 func (server *Server) GetInvitationsSendedByInviterID(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	userID, err := strconv.ParseUint(vars["inviter_id"], 10, 64)
 	if err != nil {
@@ -144,7 +145,7 @@ func (server *Server) GetInvitationsSendedByInviterID(w http.ResponseWriter, r *
 }
 
 func (server *Server) GetInvitationsSendedByInviterIDWithStatus(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	fmt.Println(vars)
 	userID, err := strconv.ParseUint(vars["inviter_id"], 10, 64)
@@ -169,13 +170,9 @@ func (server *Server) GetInvitationsSendedByInviterIDWithStatus(w http.ResponseW
 	responses.JSON(w, http.StatusOK, datesReceived)
 }
 
-func enableCors(responseWriter *http.ResponseWriter) {
-	panic("unimplemented")
-}
-
-// Update Invitation 
+// Update Invitation
 func (server *Server) CreateDate(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 
 	vars := mux.Vars(r)
 	inid, err := strconv.ParseUint(vars["id"], 10, 64)
@@ -224,7 +221,7 @@ func (server *Server) CreateDate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteDate(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 
 	vars := mux.Vars(r)
 
