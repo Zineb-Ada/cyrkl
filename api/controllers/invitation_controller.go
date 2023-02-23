@@ -11,10 +11,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/zineb-ada/cyrkl/api/auth"
+	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
 	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
-	"github.com/zineb-ada/cyrkl/api/middlewares"
 )
 
 func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
@@ -31,15 +31,15 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	invitation.PrepareInvitation("create")
-	uid, err := auth.ExtractTokenID(r)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
-	if uid != invitation.InviterID {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-		return
-	}
+	// uid, err := auth.ExtractTokenID(r)
+	// if err != nil {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 	return
+	// }
+	// if uid != invitation.InviterID {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+	// 	return
+	// }
 	if len(invitation.Statut) > 0 {
 		invitation.Statut = strings.ToLower(invitation.Statut)
 	}
