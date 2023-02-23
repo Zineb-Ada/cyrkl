@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/zineb-ada/cyrkl/api/auth"
+	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
 	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
@@ -13,7 +14,7 @@ import (
 )
 
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)

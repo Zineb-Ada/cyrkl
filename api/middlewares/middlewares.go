@@ -25,3 +25,11 @@ func SetMiddlewareAuthentication(next http.HandlerFunc) http.HandlerFunc {
 		next(w, r)
 	}
 }
+
+func EnableCors(w *http.ResponseWriter) {
+	header := (*w).Header()
+	header.Set("Access-Control-Allow-Origin", "*")
+	header.Set("Access-Control-Allow-Credentials", "true")
+	header.Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-encoding, X-CSRF-Token, Authorization")
+	header.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS, PUT, PATCH")
+}

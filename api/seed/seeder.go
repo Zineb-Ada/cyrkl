@@ -1,7 +1,6 @@
 package seed
 
 import (
-	"log"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -65,66 +64,66 @@ var usersalgo = []models.UsersAlgo{
 }
 
 func Load(db *gorm.DB) {
-	err := db.Debug().DropTableIfExists(&models.User{}, &models.Slot{}, &models.Invitation{}, models.UsersAlgo{}).Error
-	if err != nil {
-		log.Fatalf("cannot drop table: %v", err)
-	}
-	err = db.Debug().AutoMigrate(&models.User{}, &models.Slot{}, &models.Invitation{}, models.UsersAlgo{}).Error
-	if err != nil {
-		log.Fatalf("cannot migrate table: %v", err)
-	}
+	// err := db.Debug().DropTableIfExists(&models.User{}, &models.Slot{}, &models.Invitation{}, models.UsersAlgo{}).Error
+	// if err != nil {
+	// 	log.Fatalf("cannot drop table: %v", err)
+	// }
+	// err = db.Debug().AutoMigrate(&models.User{}, &models.Slot{}, &models.Invitation{}, models.UsersAlgo{}).Error
+	// if err != nil {
+	// 	log.Fatalf("cannot migrate table: %v", err)
+	// }
 
-	err = db.Debug().Model(&models.Slot{}).AddForeignKey("user_id", "users(id)", "cascade", "cascade").Error
-	if err != nil {
-		log.Fatalf("attaching foreign key error: %v", err)
-	}
+	// err = db.Debug().Model(&models.Slot{}).AddForeignKey("user_id", "users(id)", "cascade", "cascade").Error
+	// if err != nil {
+	// 	log.Fatalf("attaching foreign key error: %v", err)
+	// }
 
-	err = db.Debug().Model(&models.Invitation{}).AddForeignKey("inviter_id", "users(id)", "cascade", "cascade").AddForeignKey("invited_id", "users(id)", "cascade", "cascade").AddForeignKey("slot_id", "slots(id)", "cascade", "cascade").Error
-	if err != nil {
-		log.Fatalf("attaching foreign key error: %v", err)
-	}
-	err = db.Debug().Model(&models.Invitation{}).AddForeignKey("inviter_id", "users(id)", "cascade", "cascade").AddForeignKey("invited_id", "users(id)", "cascade", "cascade").AddForeignKey("slot_id", "slots(id)", "cascade", "cascade").Error
-	if err != nil {
-		log.Fatalf("attaching foreign key error: %v", err)
-	}
+	// err = db.Debug().Model(&models.Invitation{}).AddForeignKey("inviter_id", "users(id)", "cascade", "cascade").AddForeignKey("invited_id", "users(id)", "cascade", "cascade").AddForeignKey("slot_id", "slots(id)", "cascade", "cascade").Error
+	// if err != nil {
+	// 	log.Fatalf("attaching foreign key error: %v", err)
+	// }
+	// err = db.Debug().Model(&models.Invitation{}).AddForeignKey("inviter_id", "users(id)", "cascade", "cascade").AddForeignKey("invited_id", "users(id)", "cascade", "cascade").AddForeignKey("slot_id", "slots(id)", "cascade", "cascade").Error
+	// if err != nil {
+	// 	log.Fatalf("attaching foreign key error: %v", err)
+	// }
 
-	err = db.Debug().Model(&models.UsersAlgo{}).AddForeignKey("user_id", "users(id)", "cascade", "cascade").Error
-	if err != nil {
-		log.Fatalf("attaching foreign key error: %v", err)
-	}
-	for i, _ := range users {
-		err = db.Debug().Model(&models.User{}).Create(&users[i]).Error
-		if err != nil {
-			log.Fatalf("cannot seed users table: %v", err)
-		}
+	// err = db.Debug().Model(&models.UsersAlgo{}).AddForeignKey("user_id", "users(id)", "cascade", "cascade").Error
+	// if err != nil {
+	// 	log.Fatalf("attaching foreign key error: %v", err)
+	// }
+	// for i, _ := range users {
+	// 	err = db.Debug().Model(&models.User{}).Create(&users[i]).Error
+	// 	if err != nil {
+	// 		log.Fatalf("cannot seed users table: %v", err)
+	// 	}
 
-		slots[i].UserID = users[i].ID
-		err = db.Debug().Model(&models.Slot{}).Create(&slots[i]).Error
-		if err != nil {
-			log.Fatalf("cannot seed slot table: %v", err)
-		}
-		usersalgo[i].UserID = users[i].ID
-		err = db.Debug().Model(&models.UsersAlgo{}).Create(&usersalgo[i]).Error
-		if err != nil {
-			log.Fatalf("cannot seed useralogo table: %v", err)
-		}
-	}
-	for i, _ := range users {
-		switch i {
-		case 0:
-			invitations[i].InviterID = users[0].ID
-			invitations[i].InvitedID = users[1].ID
-			invitations[i].SlotID = slots[0].ID
-		case 1:
-			invitations[i].InviterID = users[1].ID
-			invitations[i].InvitedID = users[0].ID
-			invitations[i].SlotID = slots[1].ID
-		}
-		err = db.Debug().Model(&models.Invitation{}).Create(&invitations[i]).Error
-		if err != nil {
-			log.Fatalf("cannot seed invitation table: %v", err)
-		}
-	}
+	// 	slots[i].UserID = users[i].ID
+	// 	err = db.Debug().Model(&models.Slot{}).Create(&slots[i]).Error
+	// 	if err != nil {
+	// 		log.Fatalf("cannot seed slot table: %v", err)
+	// 	}
+	// 	usersalgo[i].UserID = users[i].ID
+	// 	err = db.Debug().Model(&models.UsersAlgo{}).Create(&usersalgo[i]).Error
+	// 	if err != nil {
+	// 		log.Fatalf("cannot seed useralogo table: %v", err)
+	// 	}
+	// }
+	// for i, _ := range users {
+	// 	switch i {
+	// 	case 0:
+	// 		invitations[i].InviterID = users[0].ID
+	// 		invitations[i].InvitedID = users[1].ID
+	// 		invitations[i].SlotID = slots[0].ID
+	// 	case 1:
+	// 		invitations[i].InviterID = users[1].ID
+	// 		invitations[i].InvitedID = users[0].ID
+	// 		invitations[i].SlotID = slots[1].ID
+	// 	}
+	// 	err = db.Debug().Model(&models.Invitation{}).Create(&invitations[i]).Error
+	// 	if err != nil {
+	// 		log.Fatalf("cannot seed invitation table: %v", err)
+	// 	}
+	// }
 }
 
 // err := db.Debug().DropTableIfExists(&models.InvitationsReceived{}).Error

@@ -10,21 +10,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/zineb-ada/cyrkl/api/auth"
+	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
 	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
 )
 
-func enableCors(w *http.ResponseWriter) {
-	header := (*w).Header()
-	header.Set("Access-Control-Allow-Origin", "*")
-	header.Set("Access-Control-Allow-Credentials", "true")
-	header.Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-encoding, X-CSRF-Token, Authorization")
-	header.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS, PUT, PATCH")
-}
-
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -55,7 +48,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	user := models.User{}
 
 	users, err := user.FindAllUsers(server.DB)
@@ -67,7 +60,7 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -84,7 +77,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -131,7 +124,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 
 	user := models.User{}

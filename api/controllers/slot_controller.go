@@ -10,12 +10,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/zineb-ada/cyrkl/api/auth"
+	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
 	"github.com/zineb-ada/cyrkl/api/utils/formaterror"
 )
 
 func (server *Server) CreateSlot(w http.ResponseWriter, r *http.Request) {
+	middlewares.EnableCors(&w)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -53,7 +55,7 @@ func (server *Server) CreateSlot(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetSlots(w http.ResponseWriter, r *http.Request) {
-
+	middlewares.EnableCors(&w)
 	calendar := models.Slot{}
 
 	calendars, err := calendar.FindSlots(server.DB)
@@ -65,7 +67,7 @@ func (server *Server) GetSlots(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetSlotByID(w http.ResponseWriter, r *http.Request) {
-
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	pid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
@@ -83,6 +85,7 @@ func (server *Server) GetSlotByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetUsersSlotsByUserID(w http.ResponseWriter, r *http.Request) {
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	userID, err := strconv.ParseUint(vars["user_id"], 10, 64)
 	if err != nil {
@@ -100,6 +103,7 @@ func (server *Server) GetUsersSlotsByUserID(w http.ResponseWriter, r *http.Reque
 }
 
 func (server *Server) UpdateSlot(w http.ResponseWriter, r *http.Request) {
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	cid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
@@ -143,11 +147,9 @@ func (server *Server) UpdateSlot(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteSlot(w http.ResponseWriter, r *http.Request) {
-
+	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
-
 	date := models.Slot{}
-
 	cid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
