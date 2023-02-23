@@ -21,6 +21,7 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 	middlewares.EnableCors(&w)
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["uid"], 10, 64)
+	fmt.Printf("uid 24 %v", uid)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -48,8 +49,8 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 	}
 	invitationCreated, err := invitation.SaveInvitation(server.DB, uid)
 	if err != nil {
-		formattedError := formaterror.FormatError(err.Error())
-		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		// formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
 	w.Header().Set("Lacation", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, invitationCreated.ID))
