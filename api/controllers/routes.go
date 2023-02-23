@@ -27,7 +27,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/deleteslot/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteSlot)).Methods("DELETE")
 
 	// Invitations routes
-	s.Router.HandleFunc("/invitation", middlewares.SetMiddlewareJSON(s.CreateInvitation)).Methods("POST")
+	s.Router.HandleFunc("/invitation/{invited_id}", middlewares.SetMiddlewareJSON(s.CreateInvitation)).Methods("POST")
 	s.Router.HandleFunc("/invitations", middlewares.SetMiddlewareJSON(s.GetInvitions)).Methods("GET")
 	s.Router.HandleFunc("/invitation/{id}", middlewares.SetMiddlewareJSON(s.GetInvitationByID)).Methods("GET")
 	s.Router.HandleFunc("/invitationsreceived/user/{invited_id}", middlewares.SetMiddlewareJSON(s.GetInvitationsReceivedByInvitedID)).Methods("GET")

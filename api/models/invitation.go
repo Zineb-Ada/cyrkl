@@ -55,7 +55,7 @@ func (in *Invitation) PrepareInvitation(action string) {
 	}
 }
 
-func (in *Invitation) SaveInvitation(db *gorm.DB) (*Invitation, error) {
+func (in *Invitation) SaveInvitation(db *gorm.DB, uid uint64) (*Invitation, error) {
 	var err error
 	err = db.Debug().Model(&Invitation{}).Create(&in).Error
 	if err != nil {
@@ -270,7 +270,7 @@ func (in *Invitation) UpdateInvit(db *gorm.DB, inid uint64) (*Invitation, error)
 	if db.Error != nil {
 		return &Invitation{}, db.Error
 	}
-	// if oldinvit.invitedID 
+	// if oldinvit.invitedID
 	if len(in.Statut) > 0 {
 		oldinvit.Statut = in.Statut
 		oldinvit.UpdatedAt = time.Now()

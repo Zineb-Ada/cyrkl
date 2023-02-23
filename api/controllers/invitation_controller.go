@@ -19,6 +19,8 @@ import (
 
 func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 	middlewares.EnableCors(&w)
+	vars := mux.Vars(r)
+	uid, err := strconv.ParseUint(vars["uid"], 10, 64)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -31,6 +33,7 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	invitation.PrepareInvitation("create")
+	invitation.InvitedID = uint32(uid)
 	// uid, err := auth.ExtractTokenID(r)
 	// if err != nil {
 	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
@@ -43,7 +46,7 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 	if len(invitation.Statut) > 0 {
 		invitation.Statut = strings.ToLower(invitation.Statut)
 	}
-	invitationCreated, err := invitation.SaveInvitation(server.DB)
+	invitationCreated, err := invitation.SaveInvitation(server.DB, uid)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
