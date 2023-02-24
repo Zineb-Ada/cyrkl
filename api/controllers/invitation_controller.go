@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/zineb-ada/cyrkl/api/auth"
 	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
@@ -236,12 +235,13 @@ func (server *Server) DeleteDate(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	uid, err := auth.ExtractTokenID(r)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
+	// uid, err := auth.ExtractTokenID(r)
+	// if err != nil {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 	return
+	// }
 	userName := date.Slotd.Userc.Name
+	uid := date.Slotd.ID
 	_, err = date.DeleteInvit(server.DB, inid, uid)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
