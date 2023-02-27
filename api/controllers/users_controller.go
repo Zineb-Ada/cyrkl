@@ -2,14 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/zineb-ada/cyrkl/api/auth"
 	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
@@ -134,15 +132,15 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	tokenID, err := auth.ExtractTokenID(r)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
-	if tokenID != uint32(uid) {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-		return
-	}
+	// tokenID, err := auth.ExtractTokenID(r)
+	// if err != nil {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 	return
+	// }
+	// if tokenID != uint32(uid) {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+	// 	return
+	// }
 	_, err = user.DeleteAUser(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
