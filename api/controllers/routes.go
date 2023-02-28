@@ -36,8 +36,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/invitationssended/user/{inviter_id}", middlewares.SetMiddlewareJSON(s.GetInvitationsSendedByInviterID)).Methods("GET")
 	s.Router.HandleFunc("/invitationssendedstatus/user/{inviter_id}/{status}", middlewares.SetMiddlewareJSON(s.GetInvitationsSendedByInviterIDWithStatus)).Methods("GET")
 	// s.Router.HandleFunc("/updateinvitation/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.CreateDate))).Methods("POST")
-	s.Router.HandleFunc("/updateinvitation/{id}", middlewares.SetMiddlewareJSON(s.UpdateSlot)).Methods("POST")
-
+	s.Router.HandleFunc("/updateinvitation/{id}", middlewares.SetMiddlewareJSON(s.CreateDate)).Methods("POST")
 	s.Router.HandleFunc("/deleteinvitation/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteDate)).Methods("DELETE")
 
 	// routes de la liste des Users triés par ordre de pertinence par l'algorithme
