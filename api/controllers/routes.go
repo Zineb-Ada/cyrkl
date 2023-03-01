@@ -16,8 +16,8 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/user/{id}", middlewares.SetMiddlewareJSON(s.GetUser)).Methods("GET")
 	// s.Router.HandleFunc("/updateuser/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUser))).Methods("POST")
 	s.Router.HandleFunc("/updateuser/{id}", middlewares.SetMiddlewareJSON(s.UpdateUser)).Methods("POST")
-	// s.Router.HandleFunc("/deleteuser/{id}", middlewares.SetMiddlewareJSON(s.DeleteUser)).Methods("DELETE")
-	s.Router.HandleFunc("/deleteuser/{id}", s.DeleteUser).Methods("DELETE")
+	s.Router.HandleFunc("/deleteuser/{id}", middlewares.SetMiddlewareJSON(s.DeleteUser)).Methods("POST")
+	// 	s.Router.HandleFunc("/deleteuser/{id}", middlewares.SetMiddlewareJSON(s.DeleteUser)).Methods("DELETE")
 
 	// calendar routes
 	s.Router.HandleFunc("/slot", middlewares.SetMiddlewareJSON(s.CreateSlot)).Methods("POST")
