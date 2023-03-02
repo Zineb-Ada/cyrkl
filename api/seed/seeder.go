@@ -11,7 +11,7 @@ import (
 var users = []models.User{
 	models.User{
 		Name:           "Lara",
-		Lastname:       "Clu",
+		Lastname:       "Clure",
 		Email:          "lar-clu@gmail.com",
 		Urlphoto:       "https://p5.storage.canalblog.com/50/89/1228697/127715041.jpg",
 		Telephone:      "0870956701",
@@ -85,7 +85,7 @@ var users = []models.User{
 		Name:           "Justine",
 		Lastname:       "Droite",
 		Email:          "justine-droite@gmail.com",
-		Urlphoto:       "https://static.wixstatic.com/media/7fa9fc_80ec24e745e94f16b126a98043b0c6b5~mv2.jpg/v1/f[…]1,enc_auto/7fa9fc_80ec24e745e94f16b126a98043b0c6b5~mv2.jpg",
+		Urlphoto:       "https://media.istockphoto.com/id/1163294201/fr/photo/femme-daffaires-confiante-de-sourire-posant-avec-des-bras-pliés.jpg?s=612x612&w=0&k=20&c=mS7gnRXKrl6dRhJx3g4qwMr9UVcffa5vp5lCsnF0YKc=",
 		Telephone:      "0870956707",
 		Password:       "123456",
 		Position:       "CTO",
