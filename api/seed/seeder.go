@@ -108,7 +108,7 @@ var users = []models.User{
 	models.User{
 		Name:           "Noemie",
 		Lastname:       "Ragout",
-		Email:          "noemie-rag@gmail.com",
+		Email:          "noem-rag@gmail.com",
 		Urlphoto:       "https://studiolecarre.com/wp-content/uploads/2022/10/2021-03-11_10-19-23-portrait-entreprise-femme-corporate-2.webp",
 		Telephone:      "0870956709",
 		Password:       "123456",
