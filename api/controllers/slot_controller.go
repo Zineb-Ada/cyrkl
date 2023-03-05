@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/zineb-ada/cyrkl/api/auth"
 	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
@@ -34,15 +35,15 @@ func (server *Server) CreateSlot(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	// uid, err := auth.ExtractTokenID(r)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-	// 	return
-	// }
-	// if uid != date.UserID {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-	// 	return
-	// }
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	if uid != date.UserID {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+		return
+	}
 	dateCreated, err := date.SaveSlot(server.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
@@ -127,15 +128,15 @@ func (server *Server) UpdateSlot(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	// uid, err := auth.ExtractTokenID(r)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-	// 	return
-	// }
-	// if uid != date.UserID {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-	// 	return
-	// }
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	if uid != date.UserID {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+		return
+	}
 	dateUpdated, err := date.UpdateASlot(server.DB, cid)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
@@ -154,13 +155,13 @@ func (server *Server) DeleteSlot(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	// uid, err := auth.ExtractTokenID(r)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-	// 	return
-	// }
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
 	userID := date.UserID
-	_, err = date.DeleteASlot(server.DB, cid, userID)
+	_, err = date.DeleteASlot(server.DB, cid, uid)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return

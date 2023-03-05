@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/zineb-ada/cyrkl/api/auth"
 	"github.com/zineb-ada/cyrkl/api/middlewares"
 	"github.com/zineb-ada/cyrkl/api/models"
 	"github.com/zineb-ada/cyrkl/api/responses"
@@ -18,9 +19,6 @@ import (
 
 func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 	middlewares.EnableCors(&w)
-	vars := mux.Vars(r)
-	uid, err := strconv.ParseUint(vars["uid"], 10, 64)
-	fmt.Printf("uid 24 %v", uid)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -33,23 +31,22 @@ func (server *Server) CreateInvitation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	invitation.PrepareInvitation("create")
-	invitation.InvitedID = uint32(uid)
-	// uid, err := auth.ExtractTokenID(r)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-	// 	return
-	// }
-	// if uid != invitation.InviterID {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-	// 	return
-	// }
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	if uid != invitation.InviterID {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+		return
+	}
 	if len(invitation.Statut) > 0 {
 		invitation.Statut = strings.ToLower(invitation.Statut)
 	}
-	invitationCreated, err := invitation.SaveInvitation(server.DB, uid)
+	invitationCreated, err := invitation.SaveInvitation(server.DB)
 	if err != nil {
-		// formattedError := formaterror.FormatError(err.Error())
-		responses.ERROR(w, http.StatusInternalServerError, err)
+		formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
 	w.Header().Set("Lacation", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, invitationCreated.ID))
@@ -204,15 +201,15 @@ func (server *Server) CreateDate(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	// uid, err := auth.ExtractTokenID(r)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-	// 	return
-	// }
-	// if uid != invitation.InvitedID {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-	// 	return
-	// }
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	if uid != invitation.InvitedID {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
 	dateCreated, err := invitation.UpdateInvit(server.DB, inid)
 	fmt.Printf("datecreated : 151 controlers %v", dateCreated)
 	if err != nil {
@@ -235,13 +232,12 @@ func (server *Server) DeleteDate(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	// uid, err := auth.ExtractTokenID(r)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-	// 	return
-	// }
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
 	userName := date.Slotd.Userc.Name
-	uid := date.Slotd.ID
 	_, err = date.DeleteInvit(server.DB, inid, uid)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)

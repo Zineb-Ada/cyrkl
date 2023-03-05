@@ -55,7 +55,7 @@ func (in *Invitation) PrepareInvitation(action string) {
 	}
 }
 
-func (in *Invitation) SaveInvitation(db *gorm.DB, uid uint64) (*Invitation, error) {
+func (in *Invitation) SaveInvitation(db *gorm.DB) (*Invitation, error) {
 	var err error
 	err = db.Debug().Model(&Invitation{}).Create(&in).Error
 	if err != nil {
